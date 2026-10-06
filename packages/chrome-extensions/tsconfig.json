@@ -4,14 +4,16 @@
     "@trace-script/tsconfig/base.json"
   ],
   "compilerOptions": {
+    "paths": {
+      "@/panel/*": ["./apps/panel/*"],
+      "@/extension/*": ["./apps/extension/*"],
+      "@/scripts/*": ["./scripts/*"]
+    },
     "types": [
       "chrome",
       "node"
     ]
   },
-  "include": [
-    "extension/**/*.ts",
-    "scripts/**/*.ts",
-    "tsdown.config.ts"
-  ]
+  "include": ["apps/extension", "scripts", "tsdown.config.ts"],
+  "exclude": ["app/panel"]
 }
