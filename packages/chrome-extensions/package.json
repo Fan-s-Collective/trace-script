@@ -25,7 +25,7 @@
   "scripts": {
     "build": "tsdown --config-loader tsx",
     "build:dev": "TRACE_SCRIPT_BUILD_MODE=development tsdown --config-loader tsx",
-    "dev": "TRACE_SCRIPT_BUILD_MODE=development tsdown --watch --config-loader tsx",
+    "dev": "TRACE_SCRIPT_BUILD_MODE=development tsdown --config-loader tsx --watch",
     "dev:panel": "nuxt dev apps/panel",
     "typecheck": "tsc --noEmit",
     "typecheck:panel": "nuxt prepare apps/panel && vue-tsc --noEmit -p apps/panel/.nuxt/tsconfig.json",
