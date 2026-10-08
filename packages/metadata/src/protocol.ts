@@ -43,9 +43,6 @@ export const traceBridgeMessageSchema = z.strictObject({
   data: traceEventEnvelopeSchema,
 })
 
-export const MAX_EVENT_BYTES = 1024 * 1024
-export const MAX_BRIDGE_BYTES = 2 * 1024 * 1024
-
 export type TraceEventEnvelope = z.infer<typeof traceEventEnvelopeSchema>
 export type TraceBridgeMessage = z.infer<typeof traceBridgeMessageSchema>
 export type TraceEventType = TraceEventEnvelope['type']

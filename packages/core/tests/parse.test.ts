@@ -30,17 +30,7 @@ describe('minimal protocol parser', () => {
       expect(parsed.payload).toEqual(response.payload)
   })
 
-  it('rejects oversize events and unserializable payloads', () => {
-    const huge = { ...start, type: 'model.response', payload: { output: '好'.repeat(400000) } }
-    const size = safeParseTraceEvent(huge)
-    expect(size.success).toBeFalsy()
-    if (!size.success)
-      expect(size.issues[0]?.code).toBe('EVENT_TOO_LARGE')
-    const bridge = safeParseBridgeMessage({ channel: 'trace-script', kind: 'trace-event', data: huge })
-    expect(bridge.success).toBeFalsy()
-    if (!bridge.success)
-      expect(bridge.issues[0]?.code).toBe('EVENT_TOO_LARGE')
-
+  it('rejects unserializable payloads', () => {
     const circular = { self: {} }
     circular.self = circular
     expect(safeParseTraceEvent({ ...start, type: 'model.response', payload: circular }).success).toBeFalsy()

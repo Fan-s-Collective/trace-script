@@ -73,17 +73,23 @@ describe('trace SDK lifecycle', () => {
     expect(events.filter(event => event.type === 'trace.error' || event.type === 'trace.end')).toHaveLength(1)
   })
 
-  it('reports bad payloads and size limits without consuming a sequence', () => {
+  it('reports invalid payloads without consuming a sequence', () => {
     const postMessage = captureMessages()
     const trace = createTraceSdk().startTrace()
     const circular = { self: {} }
     circular.self = circular
     expect(trace.recordResponse(circular).success).toBeFalsy()
-    const huge = trace.recordResponse({ output: 'x'.repeat(1024 * 1024) })
-    expect(huge).toEqual({ success: false, reason: 'EVENT_TOO_LARGE' })
     expect(trace.recordToolResult({ callId: '', output: 'x' }).success).toBeFalsy()
     expect(trace.recordResponse({ id: 'resp_1', output: [] })).toEqual({ success: true })
     expect(postMessage.mock.calls.map(([message]) => message.data.sequence)).toEqual([1, 2])
+  })
+
+  it('records large JSON responses without a size gate', () => {
+    const postMessage = captureMessages()
+    const trace = createTraceSdk().startTrace()
+    const response = { output: 'x'.repeat(1024 * 1024 + 1) }
+    expect(trace.recordResponse(response)).toEqual({ success: true })
+    expect(postMessage.mock.calls[1][0].data.payload).toEqual(response)
   })
 
   it('does not throw when the page has no receiver or postMessage fails', () => {

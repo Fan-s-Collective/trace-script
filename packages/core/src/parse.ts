@@ -1,10 +1,9 @@
 import type { TraceBridgeMessage, TraceEventEnvelope } from '@trace-script/metadata'
 import type { z } from 'zod'
-import { MAX_BRIDGE_BYTES, MAX_EVENT_BYTES, traceBridgeMessageSchema, traceEventEnvelopeSchema } from '@trace-script/metadata'
-import { utf8ByteLength } from '@trace-script/shared'
+import { traceBridgeMessageSchema, traceEventEnvelopeSchema } from '@trace-script/metadata'
 
 export interface ProtocolIssue {
-  code: 'INVALID_EVENT' | 'INVALID_BRIDGE' | 'EVENT_TOO_LARGE' | 'BRIDGE_TOO_LARGE'
+  code: 'INVALID_EVENT' | 'INVALID_BRIDGE'
   path: Array<string | number>
   message: string
 }
@@ -42,8 +41,6 @@ export function safeParseTraceEvent(input: object): ProtocolResult<TraceEventEnv
     if (!parsed.success)
       return schemaFailure(parsed.error, 'INVALID_EVENT')
     const serialized = JSON.stringify(parsed.data)
-    if (utf8ByteLength(serialized) > MAX_EVENT_BYTES)
-      return failure('EVENT_TOO_LARGE', `Event exceeds ${MAX_EVENT_BYTES} UTF-8 bytes`)
     return { success: true, data: traceEventEnvelopeSchema.parse(JSON.parse(serialized)) }
   }
   catch {
@@ -67,9 +64,6 @@ export function safeParseBridgeMessage(input: object): ProtocolResult<TraceBridg
     if (!event.success)
       return { success: false, issues: event.issues.map(issue => ({ ...issue, path: ['data', ...issue.path] })) }
     const message = { channel: parsed.data.channel, kind: parsed.data.kind, data: event.data }
-    const serialized = JSON.stringify(message)
-    if (utf8ByteLength(serialized) > MAX_BRIDGE_BYTES)
-      return failure('BRIDGE_TOO_LARGE', `Bridge message exceeds ${MAX_BRIDGE_BYTES} UTF-8 bytes`)
     return { success: true, data: message }
   }
   catch {

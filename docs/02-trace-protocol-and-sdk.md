@@ -32,7 +32,7 @@
 | `type` | SDK 方法决定 | 区分事件 |
 | `payload` | 应用传入；开始和正常结束事件省略 | 保留请求、响应或工具结果 |
 
-`payload` 必须是可 JSON 序列化的数据。SDK 在调用时保存 JSON 快照，避免应用随后修改请求对象影响已记录事件；不能序列化或超过大小限制时，返回明确的记录失败，不能阻断模型或工具调用。SDK 不删除、不改名 `response.output`、`usage` 等 OpenAI 字段，也不从响应推导另一套消息结构。应用须避免把密钥放进被记录的请求；自动脱敏策略留待后续设计。
+`payload` 必须是可 JSON 序列化的数据。SDK 在调用时保存 JSON 快照，避免应用随后修改请求对象影响已记录事件；不能序列化时返回明确的记录失败，不能阻断模型或工具调用。SDK 不删除、不改名 `response.output`、`usage` 等 OpenAI 字段，也不从响应推导另一套消息结构。应用须避免把密钥放进被记录的请求；自动脱敏策略留待后续设计。
 
 `tool.result.payload.callId` 使用响应中 `function_call.call_id`；`output` 使用应用实际提交给下一次模型请求的工具输出。扩展可据此关联原始响应中的工具调用。最小版不要求 `sessionId`、`parentId`、`name`、`status`、`durationMs`、`agent`、`model`、`attributes`、`error` 或 `metrics` 等独立字段。模型、用量和工具调用信息可从原始请求/响应读取，不在写入时重复加工。
 
@@ -56,7 +56,7 @@
 
 ### 页面传输边界
 
-SDK 使用 `window.postMessage({ channel: 'trace-script', kind: 'trace-event', data: event }, window.location.origin)` 投递单个事件。扩展仅接受顶层页面、同源且符合协议的消息，并再次校验事件。SDK 不依赖 `chrome.*`，也不承诺扩展不存在、页面关闭或导航时可靠送达。大小上限沿用每事件 1 MiB、每桥接消息 2 MiB；超限是明确的记录失败，不能静默截断原始响应。
+SDK 使用 `window.postMessage({ channel: 'trace-script', kind: 'trace-event', data: event }, window.location.origin)` 投递单个事件。扩展仅接受顶层页面、同源且符合协议的消息，并再次校验事件。SDK 不依赖 `chrome.*`，也不承诺扩展不存在、页面关闭或导航时可靠送达。
 
 ## 应用与 SDK 的职责
 
@@ -147,7 +147,7 @@ async function answerWeather(userText) {
 2. 实现网页 SDK 的 `createTraceSdk()`、`startTrace()`、`recordRequest()`、`recordResponse()`、`recordToolResult()`、`end()` 和 `fail()`；SDK 负责生成 ID、顺序、时间、快照及单事件投递。
 3. 使用同一请求对象调用 `recordRequest()` 与 OpenAI mock，完整响应对象调用 `recordResponse()`；检查接收的 `payload` 与传入的 JSON 值相同，包含 `output`、`usage` 及空值。
 4. 跑通无工具、一次工具调用、模型失败、工具失败四条路径；检查事件类型、数量、顺序、`traceId`、`callId` 和唯一终结事件。
-5. 测试不可序列化或超限输入的明确记录失败，以及无扩展时应用调用不抛出投递错误；扩展端拒绝非同源或不合法消息。
+5. 测试不可序列化输入的明确记录失败，以及无扩展时应用调用不抛出投递错误；扩展端拒绝非同源或不合法消息。
 
 ## 待实现
 
