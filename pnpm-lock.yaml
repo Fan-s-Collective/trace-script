@@ -235,6 +235,9 @@ importers:
       '@trace-script/shared':
         specifier: workspace:*
         version: link:../shared
+      zod:
+        specifier: catalog:validation
+        version: 4.6.5
     devDependencies:
       '@trace-script/tsconfig':
         specifier: workspace:*
@@ -295,12 +298,12 @@ importers:
 
   packages/sdk:
     dependencies:
+      '@trace-script/core':
+        specifier: workspace:*
+        version: link:../core
       '@trace-script/metadata':
         specifier: workspace:*
         version: link:../metadata
-      '@trace-script/shared':
-        specifier: workspace:*
-        version: link:../shared
     devDependencies:
       '@trace-script/tsconfig':
         specifier: workspace:*
