@@ -186,6 +186,12 @@ importers:
 
   packages/chrome-extensions:
     dependencies:
+      '@trace-script/core':
+        specifier: workspace:*
+        version: link:../core
+      '@trace-script/metadata':
+        specifier: workspace:*
+        version: link:../metadata
       class-variance-authority:
         specifier: catalog:ui
         version: 0.7.1

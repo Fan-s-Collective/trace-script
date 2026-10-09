@@ -33,6 +33,8 @@
     "prepare:panel": "nuxt prepare apps/panel"
   },
   "dependencies": {
+    "@trace-script/core": "workspace:*",
+    "@trace-script/metadata": "workspace:*",
     "class-variance-authority": "catalog:ui",
     "vue": "catalog:ui"
   },

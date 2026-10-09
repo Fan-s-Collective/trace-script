@@ -11,6 +11,12 @@ export interface ExtensionManifest {
     service_worker: string
     type: 'module'
   }
+  content_scripts: Array<{
+    matches: string[]
+    js: string[]
+    run_at: 'document_start'
+    all_frames: true
+  }>
   content_security_policy: {
     extension_pages: string
   }
@@ -34,6 +40,12 @@ export function createManifest(version: string, mode: ExtensionBuildMode): Exten
       service_worker: 'background.js',
       type: 'module',
     },
+    content_scripts: [{
+      matches: ['http://*/*', 'https://*/*'],
+      js: ['content.js'],
+      run_at: 'document_start',
+      all_frames: true,
+    }],
     content_security_policy: {
       extension_pages: 'script-src \'self\'; object-src \'self\'',
     },

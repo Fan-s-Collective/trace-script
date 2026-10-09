@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { createManifest } from '@/extension/manifest/create-manifest'
+import { createManifest } from '../scripts/create-manifest'
 
 describe('createManifest', () => {
-  it('creates a local Manifest V3 extension without site permissions', () => {
+  it('registers the event bridge for HTTP and HTTPS pages', () => {
     const manifest = createManifest('0.1.0', 'production')
 
     expect(manifest.manifest_version).toBe(3)
@@ -11,7 +11,12 @@ describe('createManifest', () => {
     expect(manifest.content_security_policy.extension_pages).toBe('script-src \'self\'; object-src \'self\'')
     expect(manifest).not.toHaveProperty('permissions')
     expect(manifest).not.toHaveProperty('host_permissions')
-    expect(manifest).not.toHaveProperty('content_scripts')
+    expect(manifest.content_scripts).toEqual([{
+      matches: ['http://*/*', 'https://*/*'],
+      js: ['content.js'],
+      run_at: 'document_start',
+      all_frames: true,
+    }])
   })
 
   it('labels development builds without weakening the production CSP', () => {
