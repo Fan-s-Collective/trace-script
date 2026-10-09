@@ -18,6 +18,7 @@ export interface PanelStore {
   type: ShallowRef<string>
   statusFilter: ShallowRef<string>
   agent: ShallowRef<string>
+  agents: ComputedRef<string[]>
   onlyErrors: ShallowRef<boolean>
   totalTokens: ComputedRef<number>
   visibleTokens: ComputedRef<number>
@@ -54,6 +55,10 @@ function payloadNumber(payload: Record<string, string | number | boolean>, keys:
   return 0
 }
 
+function hasPayloadNumber(payload: Record<string, string | number | boolean>, keys: string[]): boolean {
+  return keys.some(key => typeof payload[key] === 'number' && Number.isFinite(payload[key]))
+}
+
 function panelEvent(event: TraceEventEnvelope): PanelEvent {
   const rawPayload = 'payload' in event ? event.payload : {}
   const payload = payloadRecord(rawPayload)
@@ -72,12 +77,13 @@ function panelEvent(event: TraceEventEnvelope): PanelEvent {
     agent,
     model,
     tokens: payloadNumber(payload, ['total_tokens', 'tokens']),
+    tokensReported: hasPayloadNumber(payload, ['total_tokens', 'tokens']),
     duration: payloadNumber(payload, ['duration_ms', 'duration']),
+    durationReported: hasPayloadNumber(payload, ['duration_ms', 'duration']),
     traceId: event.traceId,
     sessionId: 'sessionId' in event && typeof event.sessionId === 'string' ? event.sessionId : event.traceId,
     parentId: 'parentId' in event && typeof event.parentId === 'string' ? event.parentId : '',
     payload,
-    timing: { queue: 0, model: type === 'LLM' ? payloadNumber(payload, ['duration_ms', 'duration']) : 0, tool: type === 'Tool' ? payloadNumber(payload, ['duration_ms', 'duration']) : 0 },
   }
 }
 
@@ -109,9 +115,10 @@ export function usePanelStore(): PanelStore {
   const totalDuration = computed(() => events.value.reduce((sum, event) => sum + event.duration, 0))
   const maxDuration = computed(() => events.value.reduce((max, event) => Math.max(max, event.duration), 0))
   const failedCount = computed(() => events.value.filter(event => event.status === 'failed').length)
+  const agents = computed(() => [...new Set(events.value.map(event => event.agent).filter(value => value !== '—'))].sort())
 
   function append(message: TraceBridgeMessage): void {
-    if (message.kind !== 'trace-event')
+    if (!recording.value || message.kind !== 'trace-event')
       return
     const next = panelEvent(message.data)
     if (events.value.some(event => event.id === next.id))
@@ -170,5 +177,5 @@ export function usePanelStore(): PanelStore {
     port = false
   }
 
-  return { events, rows, visibleRows, selected, selectedId, connected, recording, query, type, statusFilter, agent, onlyErrors, totalTokens, visibleTokens, totalDuration, maxDuration, failedCount, select, selectAdjacent, clear, toggleRecording, connect, dispose }
+  return { events, rows, visibleRows, selected, selectedId, connected, recording, query, type, statusFilter, agent, agents, onlyErrors, totalTokens, visibleTokens, totalDuration, maxDuration, failedCount, select, selectAdjacent, clear, toggleRecording, connect, dispose }
 }

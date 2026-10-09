@@ -9,12 +9,13 @@ export interface PanelEvent {
   agent: string
   model: string
   tokens: number
+  tokensReported: boolean
   duration: number
+  durationReported: boolean
   traceId: string
   sessionId: string
   parentId: string
   payload: Record<string, string | number | boolean>
-  timing: { queue: number, model: number, tool: number }
 }
 export interface TraceRow { event: PanelEvent, start: number }
-export type DetailTab = 'Overview' | 'Usage' | 'Payload' | 'Timing' | 'Relations' | 'Raw'
+export type DetailTab = 'Overview' | 'Payload' | 'Relations' | 'Raw'

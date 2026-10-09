@@ -8,7 +8,7 @@ import TraceFooter from '../trace/TraceFooter.vue'
 import TraceTable from '../trace/TraceTable.vue'
 
 const store = usePanelStore()
-const { events, visibleRows, selected, selectedId, connected, recording, query, type, statusFilter, agent, onlyErrors, totalTokens, visibleTokens, totalDuration, maxDuration, failedCount } = store
+const { events, visibleRows, selected, selectedId, connected, recording, query, type, statusFilter, agent, agents, onlyErrors, totalTokens, visibleTokens, totalDuration, maxDuration, failedCount } = store
 const filtersVisible = shallowRef(true)
 const timelineHeight = shallowRef(154)
 const detailsWidth = shallowRef(340)
@@ -59,16 +59,64 @@ onUnmounted(() => {
 
 <template>
   <main class="panel-root">
-    <Toolbar :recording="recording" :filters-visible="filtersVisible" :query="query" :type="type" :status="statusFilter" :agent="agent" :only-errors="onlyErrors" :total="events.length" :count="visibleRows.length" @toggle-recording="store.toggleRecording" @clear="store.clear" @toggle-filters="filtersVisible = !filtersVisible" @update:query="query = $event" @update:type="type = $event" @update:status="statusFilter = $event" @update:agent="agent = $event" @toggle-errors="onlyErrors = !onlyErrors" />
+    <Toolbar
+      :recording="recording"
+      :filters-visible="filtersVisible"
+      :query="query"
+      :type="type"
+      :status="statusFilter"
+      :agent="agent"
+      :agents="agents"
+      :only-errors="onlyErrors"
+      :total="events.length"
+      :count="visibleRows.length"
+      @toggle-recording="store.toggleRecording"
+      @clear="store.clear"
+      @toggle-filters="filtersVisible = !filtersVisible"
+      @update:query="query = $event"
+      @update:type="type = $event"
+      @update:status="statusFilter = $event"
+      @update:agent="agent = $event"
+      @toggle-errors="onlyErrors = !onlyErrors"
+    />
     <div class="trace-workspace" :style="workspaceStyle">
-      <Timeline :rows="visibleRows" :selected-id="selectedId" @select="store.select" />
-      <div class="resize-handle resize-handle-vertical" role="separator" aria-label="Resize timeline height" tabindex="0" @pointerdown="startResize('timeline', $event)" @keydown.down.prevent="timelineHeight = Math.min(360, timelineHeight + 8)" @keydown.up.prevent="timelineHeight = Math.max(92, timelineHeight - 8)" />
+      <Timeline
+        :rows="visibleRows"
+        :selected-id="selectedId"
+        @select="store.select"
+      />
+      <div
+        class="resize-handle resize-handle-vertical"
+        role="separator"
+        aria-label="Resize timeline height"
+        tabindex="0"
+        @pointerdown="startResize('timeline', $event)"
+        @keydown.down.prevent="timelineHeight = Math.min(360, timelineHeight + 8)"
+        @keydown.up.prevent="timelineHeight = Math.max(92, timelineHeight - 8)"
+      />
       <div class="content-workspace" :style="contentStyle">
         <TraceTable :rows="visibleRows" :selected-id="selectedId" @select="store.select" />
-        <div class="resize-handle resize-handle-horizontal" role="separator" aria-label="Resize details panel width" tabindex="0" @pointerdown="startResize('details', $event)" @keydown.left.prevent="detailsWidth = Math.min(520, detailsWidth + 8)" @keydown.right.prevent="detailsWidth = Math.max(280, detailsWidth - 8)" />
+        <div
+          class="resize-handle resize-handle-horizontal"
+          role="separator"
+          aria-label="Resize details panel width"
+          tabindex="0"
+          @pointerdown="startResize('details', $event)"
+          @keydown.left.prevent="detailsWidth = Math.min(520, detailsWidth + 8)"
+          @keydown.right.prevent="detailsWidth = Math.max(280, detailsWidth - 8)"
+        />
         <DetailsPanel :row="selected" :siblings="events" @select="store.select" />
       </div>
     </div>
-    <TraceFooter :connected="connected" :event-count="events.length" :visible-count="visibleRows.length" :total-tokens="totalTokens" :visible-tokens="visibleTokens" :failed-count="failedCount" :max-duration="maxDuration" :total-duration="totalDuration" />
+    <TraceFooter
+      :connected="connected"
+      :event-count="events.length"
+      :visible-count="visibleRows.length"
+      :total-tokens="totalTokens"
+      :visible-tokens="visibleTokens"
+      :failed-count="failedCount"
+      :max-duration="maxDuration"
+      :total-duration="totalDuration"
+    />
   </main>
 </template>

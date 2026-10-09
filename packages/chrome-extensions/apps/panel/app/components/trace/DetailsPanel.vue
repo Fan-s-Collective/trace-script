@@ -5,7 +5,7 @@ import { computed, shallowRef } from 'vue'
 const props = defineProps<{ row: PanelEvent | false, siblings: PanelEvent[] }>()
 const emit = defineEmits<{ select: [id: string] }>()
 const active = shallowRef<DetailTab>('Overview')
-const tabs: DetailTab[] = ['Overview', 'Usage', 'Payload', 'Timing', 'Relations', 'Raw']
+const tabs: DetailTab[] = ['Overview', 'Payload', 'Relations', 'Raw']
 const related = computed(() => {
   const current = props.row
   return current ? props.siblings.filter(item => item.id !== current.id && (item.parentId === current.id || current.parentId === item.id || item.traceId === current.traceId)) : []
@@ -30,27 +30,15 @@ function duration(item: number): string {
       <div class="details-content">
         <template v-if="active === 'Overview'">
           <dl class="details-fields">
-            <template v-for="entry in [['Name', row.name], ['Type', row.type], ['Status', row.status], ['Agent', row.agent], ['Model', row.model], ['Tokens', row.tokens], ['Duration', duration(row.duration)], ['Started', new Date(row.timestamp).toLocaleTimeString()], ['Event ID', row.id], ['Session ID', row.sessionId], ['Trace ID', row.traceId], ['Parent ID', row.parentId || '—']]" :key="entry[0]">
+            <template v-for="entry in [['Name', row.name], ['Type', row.type], ['Status', row.status], ['Agent', row.agent], ['Model', row.model], ['Tokens', row.tokensReported ? row.tokens : '—'], ['Duration', row.durationReported ? duration(row.duration) : '—'], ['Started', new Date(row.timestamp).toLocaleTimeString()], ['Event ID', row.id], ['Session ID', row.sessionId], ['Trace ID', row.traceId], ['Parent ID', row.parentId || '—']]" :key="entry[0]">
               <dt>{{ entry[0] }}</dt><dd>{{ entry[1] }}</dd>
             </template>
           </dl>
-        </template>
-        <template v-else-if="active === 'Usage'">
-          <dl class="details-fields">
-            <dt>Input tokens</dt><dd>{{ Math.round(row.tokens * 0.72) }}</dd><dt>Cached input</dt><dd>0</dd><dt>Output tokens</dt><dd>{{ Math.round(row.tokens * 0.28) }}</dd><dt>Reasoning tokens</dt><dd>{{ row.type === 'LLM' ? Math.round(row.tokens * 0.1) : 0 }}</dd><dt>Total tokens</dt><dd>{{ row.tokens }}</dd>
-          </dl><p class="detail-note">
-            Token usage is reported by the provider adapter and may be updated while a response streams.
-          </p>
         </template>
         <template v-else-if="active === 'Payload'">
           <div class="details-section-label">
             Event payload
           </div><pre class="details-code">{{ JSON.stringify(row.payload, null, 2) }}</pre>
-        </template>
-        <template v-else-if="active === 'Timing'">
-          <dl class="details-fields">
-            <dt>Queue</dt><dd>{{ duration(row.timing.queue) }}</dd><dt>Model</dt><dd>{{ duration(row.timing.model) }}</dd><dt>Tool</dt><dd>{{ duration(row.timing.tool) }}</dd><dt>Total</dt><dd>{{ duration(row.duration) }}</dd><dt>Start</dt><dd>{{ new Date(row.timestamp).toISOString() }}</dd><dt>End</dt><dd>{{ new Date(row.timestamp + row.duration).toISOString() }}</dd>
-          </dl>
         </template>
         <template v-else-if="active === 'Relations'">
           <div class="details-section-label">

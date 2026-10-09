@@ -1,9 +1,8 @@
 <script setup lang="ts">
-defineProps<{ query: string, type: string, status: string, agent: string, onlyErrors: boolean, total: number, count: number }>()
+defineProps<{ query: string, type: string, status: string, agent: string, agents: string[], onlyErrors: boolean, total: number, count: number }>()
 const emit = defineEmits<{ 'update:query': [value: string], 'update:type': [value: string], 'update:status': [value: string], 'update:agent': [value: string], 'toggleErrors': [] }>()
 const typeOptions = ['all', 'Agent', 'LLM', 'Tool']
 const statusOptions = ['all', 'success', 'running', 'failed', 'cancelled']
-const agentOptions = ['all', 'planner', 'researcher', 'writer', 'reviewer']
 </script>
 
 <template>
@@ -20,8 +19,11 @@ const agentOptions = ['all', 'planner', 'researcher', 'writer', 'reviewer']
       </option>
     </select>
     <select :value="agent" aria-label="Filter by agent" @change="emit('update:agent', ($event.target as HTMLSelectElement).value)">
-      <option v-for="option in agentOptions" :key="option" :value="option">
-        {{ option === 'all' ? 'All agents' : option }}
+      <option value="all">
+        All agents
+      </option>
+      <option v-for="option in agents" :key="option" :value="option">
+        {{ option }}
       </option>
     </select>
     <button class="error-filter" :class="onlyErrors ? 'is-active' : ''" :aria-pressed="onlyErrors" @click="emit('toggleErrors')">
