@@ -3,11 +3,13 @@ import { mount } from '@vue/test-utils'
 import { expect, it } from 'vitest'
 import PanelShell from '@/panel/app/components/foundation/PanelShell.vue'
 
-it('renders the panel identity, build version, and standalone preview status', () => {
+it('renders the complete DevTools workbench', () => {
   const wrapper = mount(PanelShell)
 
-  expect(wrapper.get('h1').text()).toBe('Agent Trace')
-  expect(wrapper.text()).toContain('v0.1.0')
-  expect(wrapper.get('[aria-label="Raw trace events"]').text()).toContain('Open this panel in Chrome DevTools')
+  expect(wrapper.text()).toContain('Agent Trace')
+  expect(wrapper.get('[aria-label="Event timeline"]').exists()).toBeTruthy()
+  expect(wrapper.get('[aria-label="Trace events"]').exists()).toBeTruthy()
+  expect(wrapper.get('.details-empty').exists()).toBeTruthy()
+  expect(wrapper.text()).toContain('0 events')
   wrapper.unmount()
 })
