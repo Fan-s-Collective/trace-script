@@ -16,6 +16,7 @@ cache
 
 .nuxt
 .output
+.pnpm-store
 dist-dev
 .artifacts
 test-results
