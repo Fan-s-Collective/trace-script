@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
-import { mainfest } from './scripts/create-manifest'
+import { mainfest } from './scripts/create-manifest.ts'
 
 export default defineConfig(() => {
   const mode = process.env.MODE === 'development' ? 'development' : 'production'

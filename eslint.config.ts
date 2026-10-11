@@ -29,6 +29,7 @@ export default antfu({
 }, createSimplePlugin({
   name: 'no-ts-import-extension',
   include: ['*.ts', '**/*.ts'],
+  exclude: ['*.config.ts', '**/*.config.ts'],
   create(context) {
     return {
       ImportDeclaration(node) {
