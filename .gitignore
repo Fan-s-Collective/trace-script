@@ -4,23 +4,15 @@
 .turbo
 *.log
 *.tgz
-*.tsbuildinfo
 coverage
 dist
-lib-cov
 logs
 node_modules
-temp
 cache
 .eslintcache
 
-.nuxt
-.output
 .pnpm-store
 dist-dev
 .artifacts
 test-results
 playwright-report
-
-.build
-artifacts
