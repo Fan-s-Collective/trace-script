@@ -19,6 +19,10 @@ export default defineConfig(() => {
       tailwindcss(),
       mainfest(mode),
     ],
+    server: {
+      port: 4173,
+      open: '/panel.html',
+    },
     build: {
       outDir: isDev ? 'dist-dev' : 'dist',
       emptyOutDir: true,
