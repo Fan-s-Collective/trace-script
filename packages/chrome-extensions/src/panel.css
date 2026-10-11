@@ -9,11 +9,51 @@ body {
   color: #e5e7eb;
 }
 
-pre {
-  box-sizing: border-box;
+.trace-panel {
   min-height: 100vh;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.trace-header,
+.event-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.trace-header {
+  position: sticky;
+  top: 0;
+  padding-bottom: 8px;
+  background: #111827;
+}
+
+.trace-events {
+  display: grid;
+  gap: 8px;
   margin: 0;
-  padding: 16px;
+  padding-left: 28px;
+}
+
+.trace-event {
+  padding: 8px;
+  border: 1px solid #374151;
+  border-radius: 4px;
+}
+
+.trace-event p,
+.empty {
+  margin: 6px 0;
+  color: #cbd5e1;
+}
+
+.trace-event pre {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 8px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  color: #d1d5db;
+  background: #030712;
 }

@@ -1,1 +1,1 @@
-export { isArray, isObject, isString, isUndefined } from './type-guards'
+export { isArray, isNumber, isObject, isString, isUndefined } from './type-guards'

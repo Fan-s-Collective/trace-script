@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { TRACE_CHANNEL, TRACE_EVENT_TYPES, traceBridgeMessageSchema, traceEventEnvelopeSchema } from '@/index'
+import { TRACE_CHANNEL, TRACE_EVENT_TYPE, TRACE_EVENT_TYPES, traceBridgeMessageSchema, traceEventEnvelopeSchema } from '@/index'
 
 const common = {
   eventId: 'event-1',
@@ -19,7 +19,14 @@ describe('minimal trace protocol', () => {
       { ...common, type: 'trace.error', payload: { message: 'Failed' } },
     ]
     expect(events.map(event => traceEventEnvelopeSchema.safeParse(event).success)).toEqual(Array.from({ length: 6 }).fill(true))
-    expect(TRACE_EVENT_TYPES).toHaveLength(6)
+    expect(TRACE_EVENT_TYPES).toEqual([
+      TRACE_EVENT_TYPE.TRACE_START,
+      TRACE_EVENT_TYPE.MODEL_REQUEST,
+      TRACE_EVENT_TYPE.MODEL_RESPONSE,
+      TRACE_EVENT_TYPE.TOOL_RESULT,
+      TRACE_EVENT_TYPE.TRACE_END,
+      TRACE_EVENT_TYPE.TRACE_ERROR,
+    ])
   })
 
   it('rejects removed fields and malformed payloads', () => {

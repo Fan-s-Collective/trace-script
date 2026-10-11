@@ -1,6 +1,6 @@
 import type { ProtocolIssue } from '@trace-script/core'
 import { safeParseBridgeMessage } from '@trace-script/core'
-import { TRACE_CHANNEL } from '@trace-script/metadata'
+import { TRACE_BRIDGE_KIND, TRACE_CHANNEL, TRACE_EVENT_TYPE } from '@trace-script/metadata'
 
 export type RecordResult
   = | { success: true }
@@ -42,7 +42,7 @@ export function createTraceSdk(): { startTrace: () => TraceHandle } {
             timestamp: new Date().toISOString(),
             ...event,
           }
-          const parsed = safeParseBridgeMessage({ channel: TRACE_CHANNEL, kind: 'trace-event', data: envelope })
+          const parsed = safeParseBridgeMessage({ channel: TRACE_CHANNEL, kind: TRACE_BRIDGE_KIND, data: envelope })
           if (!parsed.success)
             return { success: false, reason: parsed.issues[0]?.code ?? 'INVALID_BRIDGE' }
           window.postMessage(parsed.data, window.location.origin)
@@ -54,23 +54,23 @@ export function createTraceSdk(): { startTrace: () => TraceHandle } {
         }
       }
 
-      record({ type: 'trace.start' })
+      record({ type: TRACE_EVENT_TYPE.TRACE_START })
 
       return {
         traceId,
         recordRequest(request: object) {
-          return record({ type: 'model.request', payload: request })
+          return record({ type: TRACE_EVENT_TYPE.MODEL_REQUEST, payload: request })
         },
         recordResponse(response: object) {
-          return record({ type: 'model.response', payload: response })
+          return record({ type: TRACE_EVENT_TYPE.MODEL_RESPONSE, payload: response })
         },
         recordToolResult(result: { callId: string, output: string }) {
-          return record({ type: 'tool.result', payload: result })
+          return record({ type: TRACE_EVENT_TYPE.TOOL_RESULT, payload: result })
         },
         end() {
           if (ended)
             return { success: true }
-          const result = record({ type: 'trace.end' })
+          const result = record({ type: TRACE_EVENT_TYPE.TRACE_END })
           if (result.success)
             ended = true
           return result
@@ -79,7 +79,7 @@ export function createTraceSdk(): { startTrace: () => TraceHandle } {
           if (ended)
             return { success: true }
           const message = error instanceof Error ? error.message : error
-          const result = record({ type: 'trace.error', payload: { message } })
+          const result = record({ type: TRACE_EVENT_TYPE.TRACE_ERROR, payload: { message } })
           if (result.success)
             ended = true
           return result
