@@ -168,9 +168,9 @@ importers:
       '@trace-script/core':
         specifier: workspace:*
         version: link:../core
-      '@trace-script/metadata':
+      '@trace-script/shared':
         specifier: workspace:*
-        version: link:../metadata
+        version: link:../shared
       vue:
         specifier: catalog:ui
         version: 3.5.43(typescript@6.0.3)
@@ -178,9 +178,9 @@ importers:
       '@tailwindcss/vite':
         specifier: catalog:build
         version: 4.3.3(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
-      '@trace-script/shared':
+      '@trace-script/metadata':
         specifier: workspace:*
-        version: link:../shared
+        version: link:../metadata
       '@trace-script/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -234,13 +234,13 @@ importers:
 
   packages/playground:
     dependencies:
-      '@trace-script/sdk':
-        specifier: workspace:*
-        version: link:../sdk
       vue:
         specifier: catalog:ui
         version: 3.5.43(typescript@6.0.3)
     devDependencies:
+      '@trace-script/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@types/node':
         specifier: catalog:types
         version: 26.6.3

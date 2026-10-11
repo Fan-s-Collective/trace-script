@@ -8,6 +8,7 @@
       "outputs": ["dist/**", "dist-dev/**"]
     },
     "build:deps": {
+      "dependsOn": ["^build:deps"],
       "outputs": ["dist/**", "dist-dev/**"]
     },
     "typecheck": {
@@ -15,7 +16,7 @@
     },
     "//#typecheck:root": {},
     "dev": {
-      "dependsOn": ["build:deps"],
+      "dependsOn": ["build:deps", "^build:deps"],
       "cache": false,
       "persistent": true
     },

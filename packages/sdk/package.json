@@ -36,8 +36,14 @@
   ],
   "scripts": {
     "build": "tsdown",
+    "build:deps": "tsdown",
     "dev": "tsdown --watch",
     "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "zod": "^4.0.0"
+  },
+  "dependencies": {
   },
   "devDependencies": {
     "@trace-script/core": "workspace:*",
