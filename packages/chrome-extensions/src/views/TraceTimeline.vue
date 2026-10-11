@@ -34,8 +34,9 @@ function barStyle(row: TimelineRow): Record<string, string> {
   }
 }
 function syncTimelineScroll(event: Event): void {
-  if (rulerCanvas.value)
-    rulerCanvas.value.style.transform = `translateX(-${(event.currentTarget as HTMLElement).scrollLeft}px)`
+  if (!rulerCanvas.value)
+    return
+  rulerCanvas.value.style.transform = `translateX(-${(event.currentTarget as HTMLElement).scrollLeft}px)`
 }
 </script>
 

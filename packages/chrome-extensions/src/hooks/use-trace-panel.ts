@@ -46,7 +46,13 @@ function createTracePanel(): TracePanelState {
   const connected = ref(false)
   const filtersVisible = ref(true)
   const [recording, toggleRecording] = useToggle(true)
-  const filter = reactive({ query: '', type: TRACE_FILTER_VALUE.ALL as EventTypeFilter, status: TRACE_FILTER_VALUE.ALL as StatusFilter, agent: TRACE_FILTER_VALUE.ALL, onlyErrors: false })
+  const filter = reactive({
+    query: '',
+    type: TRACE_FILTER_VALUE.ALL as EventTypeFilter,
+    status: TRACE_FILTER_VALUE.ALL as StatusFilter,
+    agent: TRACE_FILTER_VALUE.ALL,
+    onlyErrors: false,
+  })
   const timelineHeight = ref(112)
   const detailsWidth = ref(340)
   const dragging = ref<'timeline' | 'details' | null>(null)
@@ -55,9 +61,38 @@ function createTracePanel(): TracePanelState {
   let cleanup = (): void => {}
   const previewEvents = [
     { eventId: 'preview-start', traceId: 'preview-trace', sequence: 1, timestamp: '2024-01-01T12:00:00.000Z', type: 'trace.start' },
-    { eventId: 'preview-request', traceId: 'preview-trace', sequence: 2, timestamp: '2024-01-01T12:00:00.120Z', type: 'model.request', payload: { name: 'model.request', model: 'gpt-4.1-mini', agent: 'planner', input: 'Summarize the latest trace.' } },
-    { eventId: 'preview-response', traceId: 'preview-trace', sequence: 3, timestamp: '2024-01-01T12:00:01.340Z', type: 'model.response', payload: { name: 'model.response', model: 'gpt-4.1-mini', agent: 'planner', output_text: 'The trace is healthy.', usage: { total_tokens: 42 }, duration_ms: 1220, status: 'success' } },
-    { eventId: 'preview-tool', traceId: 'preview-trace', sequence: 4, timestamp: '2024-01-01T12:00:02.000Z', type: 'tool.result', payload: { callId: 'call_preview', output: 'Tool result received.' } },
+    {
+      eventId: 'preview-request',
+      traceId: 'preview-trace',
+      sequence: 2,
+      timestamp: '2024-01-01T12:00:00.120Z',
+      type: 'model.request',
+      payload: { name: 'model.request', model: 'gpt-4.1-mini', agent: 'planner', input: 'Summarize the latest trace.' },
+    },
+    {
+      eventId: 'preview-response',
+      traceId: 'preview-trace',
+      sequence: 3,
+      timestamp: '2024-01-01T12:00:01.340Z',
+      type: 'model.response',
+      payload: {
+        name: 'model.response',
+        model: 'gpt-4.1-mini',
+        agent: 'planner',
+        output_text: 'The trace is healthy.',
+        usage: { total_tokens: 42 },
+        duration_ms: 1220,
+        status: 'success',
+      },
+    },
+    {
+      eventId: 'preview-tool',
+      traceId: 'preview-trace',
+      sequence: 4,
+      timestamp: '2024-01-01T12:00:02.000Z',
+      type: 'tool.result',
+      payload: { callId: 'call_preview', output: 'Tool result received.' },
+    },
   ] as TraceEventEnvelope[]
   const visibleEvents = computed(() => events.value.filter((event) => {
     const haystack = `${eventName(event)} ${event.eventId} ${event.traceId} ${eventAgent(event)}`.toLowerCase()
@@ -158,5 +193,31 @@ function createTracePanel(): TracePanelState {
     cleanup()
     window.removeEventListener('pointermove', resize)
   })
-  return { events, selectedId, selectedEvent, isPreview, connected, filtersVisible, recording, filter, agents, visibleEvents, totalTokens, visibleTokens, failedCount, maxDuration, totalDuration, timelineHeight, detailsWidth, workspaceStyle, contentStyle, toggleRecording, handleMessage, selectEvent, clearEvents, addPreviewEvents, startResize }
+  return {
+    events,
+    selectedId,
+    selectedEvent,
+    isPreview,
+    connected,
+    filtersVisible,
+    recording,
+    filter,
+    agents,
+    visibleEvents,
+    totalTokens,
+    visibleTokens,
+    failedCount,
+    maxDuration,
+    totalDuration,
+    timelineHeight,
+    detailsWidth,
+    workspaceStyle,
+    contentStyle,
+    toggleRecording,
+    handleMessage,
+    selectEvent,
+    clearEvents,
+    addPreviewEvents,
+    startResize,
+  }
 }

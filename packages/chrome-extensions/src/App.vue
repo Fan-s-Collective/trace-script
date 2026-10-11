@@ -6,7 +6,32 @@ import TraceStatusBar from './views/TraceStatusBar.vue'
 import TraceTimeline from './views/TraceTimeline.vue'
 import TraceToolbar from './views/TraceToolbar.vue'
 
-const { events, selectedId, selectedEvent, isPreview, connected, filtersVisible, recording, filter, agents, visibleEvents, totalTokens, visibleTokens, failedCount, maxDuration, totalDuration, timelineHeight, detailsWidth, workspaceStyle, contentStyle, toggleRecording, selectEvent, clearEvents, addPreviewEvents, startResize } = useTracePanel()
+const {
+  events,
+  selectedId,
+  selectedEvent,
+  isPreview,
+  connected,
+  filtersVisible,
+  recording,
+  filter,
+  agents,
+  visibleEvents,
+  totalTokens,
+  visibleTokens,
+  failedCount,
+  maxDuration,
+  totalDuration,
+  timelineHeight,
+  detailsWidth,
+  workspaceStyle,
+  contentStyle,
+  toggleRecording,
+  selectEvent,
+  clearEvents,
+  addPreviewEvents,
+  startResize,
+} = useTracePanel()
 </script>
 
 <template>
