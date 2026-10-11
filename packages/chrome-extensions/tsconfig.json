@@ -13,5 +13,5 @@
       "node"
     ]
   },
-  "include": ["env.d.ts", "src", "scripts"]
+  "include": ["env.d.ts", "src", "tests", "scripts"]
 }

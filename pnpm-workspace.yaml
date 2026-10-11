@@ -17,6 +17,9 @@ allowBuilds:
   esbuild: true
   simple-git-hooks: true
 
+catalog:
+  '@vueuse/core': ^15.0.0
+
 catalogs:
   build:
     '@tailwindcss/vite': ^4.3.3

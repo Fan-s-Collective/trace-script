@@ -19,9 +19,14 @@ export default defineConfig(() => {
       tailwindcss(),
       mainfest(mode),
     ],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+      },
+    },
     server: {
       port: 4173,
-      open: '/panel.html',
+      open: '/index.html',
     },
     build: {
       outDir: isDev ? 'dist-dev' : 'dist',

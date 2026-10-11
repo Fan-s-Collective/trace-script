@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isContentToWorkerMessage, isPanelToWorkerMessage } from '../src/messages'
+import { isContentToWorkerMessage, isPanelToWorkerMessage } from '@/messages'
 
 describe('extension message guards', () => {
   it('accepts an event envelope candidate from content scripts', () => {

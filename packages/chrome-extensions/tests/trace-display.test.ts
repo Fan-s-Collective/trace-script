@@ -1,6 +1,6 @@
 import type { TraceEventEnvelope } from '@trace-script/metadata'
 import { describe, expect, it } from 'vitest'
-import { eventSummary, eventTitle } from '../src/trace-display'
+import { eventSummary, eventTitle } from '@/trace-display'
 
 const common = {
   eventId: 'event-1',
