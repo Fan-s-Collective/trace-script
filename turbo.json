@@ -15,7 +15,7 @@
     },
     "//#typecheck:root": {},
     "dev": {
-      "dependsOn": ["build:deps", "^build"],
+      "dependsOn": ["build:deps"],
       "cache": false,
       "persistent": true
     },
