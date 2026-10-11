@@ -9,11 +9,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "turbo run dev",
-    "dev:panel": "turbo run dev:panel",
     "build": "turbo run build",
-    "build:dev": "turbo run build && turbo run build:dev --filter=@trace-script/chrome-extensions",
-    "package:chrome": "pnpm --filter @trace-script/chrome-extensions package:chrome",
-    "typecheck": "turbo run typecheck typecheck:root && turbo run typecheck:panel --filter=@trace-script/chrome-extensions",
+    "typecheck": "turbo run typecheck typecheck:root",
     "typecheck:root": "vue-tsc --noEmit -p tsconfig.json",
     "test:cov": "vitest --coverage",
     "test": "vitest",

@@ -71,7 +71,6 @@
 - `pnpm test`；
 - `pnpm test:e2e`；
 - `pnpm build`；
-- `pnpm package:chrome`。
 
 每条命令失败时必须返回非零退出码。CI 与本地使用同一套入口。
 

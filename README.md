@@ -15,13 +15,10 @@ pnpm install
 | Command | Purpose |
 | --- | --- |
 | `pnpm dev` | Start the playground (`http://127.0.0.1:4317`) |
-| `pnpm dev:panel` | Start the panel development server |
 | `pnpm build` | Build all workspaces and the extension |
-| `pnpm build:dev` | Build the development extension |
 | `pnpm test` | Run Vitest tests |
 | `pnpm typecheck` | Run TypeScript checks |
 | `pnpm lint` | Run lint checks |
-| `pnpm package:chrome` | Package the production extension |
 
 ## Load the extension locally
 
@@ -29,5 +26,3 @@ pnpm install
 2. Open `chrome://extensions`, enable **Developer mode**, and choose **Load unpacked**.
 3. Select `packages/chrome-extensions/dist`.
 4. Open the playground's DevTools and select the **Agent Trace** panel.
-
-The development extension is generated in `packages/chrome-extensions/dist-dev`.
