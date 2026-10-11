@@ -1,5 +1,3 @@
-import { isUndefined } from '@trace-script/shared'
-
-if (!isUndefined(chrome) && chrome.devtools) {
+if (typeof chrome !== 'undefined' && chrome.devtools) {
   chrome.devtools.panels.create('Agent Trace', '', 'devtools.html')
 }

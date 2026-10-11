@@ -108,7 +108,7 @@ function createTracePanel(): TracePanelState {
   const workspaceStyle = computed(() => ({ gridTemplateRows: `${timelineHeight.value}px 1px minmax(0, 1fr)` }))
   const contentStyle = computed(() => ({ gridTemplateColumns: `minmax(420px, 1fr) 1px ${detailsWidth.value}px` }))
   function handleMessage(message: WorkerToPanelMessage): void {
-    if (message.type === EXTENSION_MESSAGE_TYPE.TRACE_QUERY_RESULT && (recording.value || message.events.length === 0)) {
+    if (message.type === EXTENSION_MESSAGE_TYPE.TRACE_QUERY_RESULT) {
       events.value = [...message.events]
     }
     else if (message.type === EXTENSION_MESSAGE_TYPE.TRACE_EVENTS_APPEND && recording.value && !events.value.some(event => event.eventId === message.event.eventId)) {
