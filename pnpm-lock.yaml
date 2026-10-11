@@ -26,12 +26,18 @@ catalogs:
       specifier: ^0.0.6
       version: 0.0.6
   dev:
+    jiti:
+      specifier: ^2.7.0
+      version: 2.7.0
     npm-run-all2:
       specifier: ^9.0.3
       version: 9.0.3
     simple-git-hooks:
       specifier: ^2.14.0
       version: 2.14.0
+    tsx:
+      specifier: ^4.23.15
+      version: 4.23.15
     typescript:
       specifier: ^6.0.3
       version: 6.0.3
@@ -99,9 +105,15 @@ importers:
       '@trace-script/tsconfig':
         specifier: workspace:*
         version: link:packages/tsconfig
+      '@types/chrome':
+        specifier: catalog:types
+        version: 0.3.4
       '@types/node':
         specifier: catalog:types
         version: 26.6.3
+      '@vitejs/plugin-vue':
+        specifier: catalog:build
+        version: 6.0.9(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(vue@3.5.43(typescript@6.0.3))
       '@vitest/coverage-v8':
         specifier: catalog:test
         version: 5.0.2(vitest@5.0.2)
@@ -126,6 +138,12 @@ importers:
       simple-git-hooks:
         specifier: catalog:dev
         version: 2.14.0
+      tsdown:
+        specifier: catalog:build
+        version: 0.23.0(@volar/typescript@2.4.28(typescript@6.0.3))(@vue/language-core@3.3.12)(tsx@4.23.15)(typescript@6.0.3)(vue-tsc@3.3.12(typescript@6.0.3))
+      tsx:
+        specifier: catalog:dev
+        version: 4.23.15
       turbo:
         specifier: catalog:build
         version: 2.11.5
@@ -229,6 +247,9 @@ importers:
       '@vitejs/plugin-vue':
         specifier: catalog:build
         version: 6.0.9(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(vue@3.5.43(typescript@6.0.3))
+      jiti:
+        specifier: catalog:dev
+        version: 2.7.0
       npm-run-all2:
         specifier: catalog:dev
         version: 9.0.3
@@ -5157,7 +5178,6 @@ snapshots:
       '@esbuild/win32-arm64': 0.28.2
       '@esbuild/win32-ia32': 0.28.2
       '@esbuild/win32-x64': 0.28.2
-    optional: true
 
   escalade@3.2.0: {}
 
@@ -6652,7 +6672,6 @@ snapshots:
       esbuild: 0.28.2
     optionalDependencies:
       fsevents: 2.3.3
-    optional: true
 
   turbo@2.11.5:
     optionalDependencies:

@@ -20,6 +20,7 @@
   "devDependencies": {
     "@types/node": "catalog:types",
     "@vitejs/plugin-vue": "catalog:build",
+    "jiti": "catalog:dev",
     "npm-run-all2": "catalog:dev",
     "typescript": "catalog:dev",
     "vite": "catalog:build",

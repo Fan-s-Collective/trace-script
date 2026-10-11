@@ -17,6 +17,7 @@
     "typecheck:panel": {},
     "//#typecheck:root": {},
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },

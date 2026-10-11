@@ -33,7 +33,6 @@
     "eslint-factory": "catalog:lint",
     "eslint-plugin-format": "catalog:lint",
     "happy-dom": "catalog:test",
-    "jiti": "catalog:dev",
     "lint-staged": "catalog:lint",
     "simple-git-hooks": "catalog:dev",
     "tsdown": "catalog:build",
