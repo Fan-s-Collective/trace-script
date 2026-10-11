@@ -31,11 +31,11 @@
   "dependencies": {
     "@trace-script/core": "workspace:*",
     "@trace-script/metadata": "workspace:*",
-    "@trace-script/shared": "workspace:*",
     "vue": "catalog:ui"
   },
   "devDependencies": {
     "@tailwindcss/vite": "catalog:build",
+    "@trace-script/shared": "workspace:*",
     "@trace-script/tsconfig": "workspace:*",
     "@types/chrome": "catalog:types",
     "@types/node": "catalog:types",
