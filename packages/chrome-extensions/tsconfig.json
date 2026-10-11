@@ -5,15 +5,12 @@
   ],
   "compilerOptions": {
     "paths": {
-      "@/panel/*": ["./apps/panel/*"],
-      "@/extension/*": ["./apps/extension/*"],
-      "@/scripts/*": ["./scripts/*"]
+      "@/*": ["./src/*"]
     },
     "types": [
       "chrome",
       "node"
     ]
   },
-  "include": ["apps/extension", "scripts", "tsdown.config.ts"],
-  "exclude": ["app/panel"]
+  "include": ["src", "scripts", "vite.config.ts"]
 }

@@ -20,6 +20,10 @@
 
 当前计划只描述如何实施，不代表已经完成对应代码。
 
+当前代码与计划的逐项核实见[实现核实与可验收功能清单](./09-implementation-audit.md)。
+
+要现场跑通核心 MVP，请按[MVP 黄金路径运行手册](./10-mvp-runbook.md)执行。
+
 ## 2. 产品目标
 
 Trace Script 是一个嵌入 Chrome DevTools 的 Agent 会话可视化调试工具。网页中的 Agent 应用通过浏览器事件投递 Trace 数据，扩展负责接收、校验、存储和展示。主界面参考 Chrome DevTools Network 面板，提供事件列表、筛选、瀑布时间轴、详情查看、错误定位以及导入导出能力。

@@ -40,7 +40,6 @@
     "tsx": "catalog:dev",
     "turbo": "catalog:build",
     "typescript": "catalog:dev",
-    "verify-git-commit": "catalog:dev",
     "vite": "catalog:build",
     "vitest": "catalog:test",
     "vue": "catalog:ui",
