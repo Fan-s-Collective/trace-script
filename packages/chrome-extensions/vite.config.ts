@@ -8,9 +8,7 @@ function resolve(name: string): ReturnType<typeof fileURLToPath> {
   return fileURLToPath(new URL(`./src/entry/${name}.ts`, import.meta.url))
 }
 
-export default defineConfig(() => {
-  const mode = process.env.MODE === 'development' ? 'development' : 'production'
-  const isDev = mode === 'development'
+export default defineConfig(({ mode }) => {
   return {
     root: fileURLToPath(new URL('.', import.meta.url)),
     publicDir: 'public',
@@ -29,7 +27,7 @@ export default defineConfig(() => {
       open: '/index.html',
     },
     build: {
-      outDir: isDev ? 'dist-dev' : 'dist',
+      outDir: mode === 'development' ? 'dist-dev' : 'dist',
       emptyOutDir: true,
       copyPublicDir: true,
       rollupOptions: {
@@ -37,7 +35,7 @@ export default defineConfig(() => {
           content: resolve('content'),
           background: resolve('background'),
           devtools: resolve('devtools'),
-          panel: resolve('panel'),
+          panel: fileURLToPath(new URL('./panel.html', import.meta.url)),
         },
         output: {
           entryFileNames: '[name].js',

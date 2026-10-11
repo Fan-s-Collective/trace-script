@@ -24,7 +24,8 @@
   ],
   "scripts": {
     "build": "vite build",
-    "dev": "MODE=development vite --mode development",
+    "build:dev": "vite build --mode development",
+    "dev": "vite --mode development",
     "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
