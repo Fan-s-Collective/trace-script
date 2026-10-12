@@ -12,6 +12,9 @@ catalogs:
     '@vitejs/plugin-vue':
       specifier: ^6.0.7
       version: 6.0.9
+    tailwindcss:
+      specifier: ^4.3.3
+      version: 4.3.3
     tsdown:
       specifier: ^0.23.0
       version: 0.23.0
@@ -245,6 +248,9 @@ importers:
         specifier: catalog:ui
         version: 3.5.43(typescript@6.0.3)
     devDependencies:
+      '@tailwindcss/vite':
+        specifier: catalog:build
+        version: 4.3.3(vite@8.3.1(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))
       '@trace-script/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -260,6 +266,9 @@ importers:
       npm-run-all2:
         specifier: catalog:dev
         version: 9.0.3
+      tailwindcss:
+        specifier: catalog:build
+        version: 4.3.3
       typescript:
         specifier: catalog:dev
         version: 6.0.3

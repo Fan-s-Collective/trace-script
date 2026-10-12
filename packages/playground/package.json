@@ -17,11 +17,13 @@
     "vue": "catalog:ui"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "catalog:build",
     "@trace-script/sdk": "workspace:*",
     "@types/node": "catalog:types",
     "@vitejs/plugin-vue": "catalog:build",
     "jiti": "catalog:dev",
     "npm-run-all2": "catalog:dev",
+    "tailwindcss": "catalog:build",
     "typescript": "catalog:dev",
     "vite": "catalog:build",
     "vite-plugin-vue-devtools": "catalog:dev",
