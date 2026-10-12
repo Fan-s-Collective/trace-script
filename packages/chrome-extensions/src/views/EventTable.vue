@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TraceEventEnvelope } from '@trace-script/metadata'
-import { eventSummary } from '../trace-display'
-import { eventAgent, eventDuration, eventModel, eventName, eventStatus, eventTokens, eventTraceId, formatDuration } from '../utils/ui-model'
+import { eventSummary } from '@/trace-display'
+import { eventAgent, eventDuration, eventModel, eventName, eventStatus, eventTokens, eventTraceId, formatDuration } from '@/utils/ui-model'
 
 defineProps<{ events: TraceEventEnvelope[], selectedId: string }>()
 const emit = defineEmits<{ select: [id: string] }>()

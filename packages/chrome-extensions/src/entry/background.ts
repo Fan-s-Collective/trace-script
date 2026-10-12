@@ -1,8 +1,8 @@
 import type { TraceEventEnvelope } from '@trace-script/metadata'
-import type { WorkerToPanelMessage } from '../messages'
+import type { WorkerToPanelMessage } from '@/messages'
 import { safeParseTraceEvent } from '@trace-script/core'
 import { isNumber } from '@trace-script/shared'
-import { EXTENSION_MESSAGE_TYPE, EXTENSION_PORT_NAME, isContentToWorkerMessage, isPanelToWorkerMessage } from '../messages'
+import { EXTENSION_MESSAGE_TYPE, EXTENSION_PORT_NAME, isContentToWorkerMessage, isPanelToWorkerMessage } from '@/messages'
 
 const eventsByTab = new Map<number, TraceEventEnvelope[]>()
 const panelsByTab = new Map<number, Set<chrome.runtime.Port>>()

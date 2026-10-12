@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { TraceEventEnvelope } from '@trace-script/metadata'
 import { computed, shallowRef } from 'vue'
-import { eventAgent, eventDuration, eventName, eventStatus, eventTimestamp, formatDuration } from '../utils/ui-model'
+import { eventAgent, eventDuration, eventName, eventStatus, eventTimestamp, formatDuration } from '@/utils/ui-model'
 
 interface TimelineRow {
   event: TraceEventEnvelope

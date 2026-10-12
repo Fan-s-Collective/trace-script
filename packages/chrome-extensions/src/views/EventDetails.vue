@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { TraceEventEnvelope } from '@trace-script/metadata'
-import type { DetailTab } from '../types/trace-panel'
+import type { DetailTab } from '@/types/trace-panel'
 import { computed, shallowRef, watch } from 'vue'
 import { Detail, Overview, Payload, Raw, Relations, Timing, Usage } from '@/components/details'
-import { eventPayload } from '../utils/ui-model'
+import { eventPayload } from '@/utils/ui-model'
 
 const props = defineProps<{ event?: TraceEventEnvelope, siblings: TraceEventEnvelope[] }>()
 const emit = defineEmits<{ select: [id: string] }>()

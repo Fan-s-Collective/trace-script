@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatDuration } from '../utils/ui-model'
+import { formatDuration } from '@/utils/ui-model'
 
 defineProps<{ connected: boolean, eventCount: number, visibleCount: number, totalTokens: number, visibleTokens: number, failedCount: number, maxDuration: number, totalDuration: number }>()
 </script>

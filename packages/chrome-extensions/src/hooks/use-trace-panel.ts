@@ -1,11 +1,11 @@
 import type { TraceEventEnvelope } from '@trace-script/metadata'
 import type { ComputedRef, Ref } from 'vue'
-import type { WorkerToPanelMessage } from '../messages'
-import type { EventTypeFilter, StatusFilter, TracePanelFilter } from '../types/trace-panel'
+import type { WorkerToPanelMessage } from '@/messages'
+import type { EventTypeFilter, StatusFilter, TracePanelFilter } from '@/types/trace-panel'
 import { useEventListener, useToggle } from '@vueuse/core'
 import { computed, ref as deepRef, onMounted, onUnmounted, reactive, shallowRef } from 'vue'
-import { EXTENSION_MESSAGE_TYPE, EXTENSION_PORT_NAME } from '../messages'
-import { eventAgent, eventDuration, eventName, eventStatus, eventTimestamp, eventTokens, TRACE_FILTER_VALUE, TRACE_STATUS } from '../utils/ui-model'
+import { EXTENSION_MESSAGE_TYPE, EXTENSION_PORT_NAME } from '@/messages'
+import { eventAgent, eventDuration, eventName, eventStatus, eventTimestamp, eventTokens, TRACE_FILTER_VALUE, TRACE_STATUS } from '@/utils/ui-model'
 
 interface TracePanelState {
   events: Ref<TraceEventEnvelope[]>

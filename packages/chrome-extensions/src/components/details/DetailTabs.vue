@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DetailTab } from '../../types/trace-panel'
+import type { DetailTab } from '@/types/trace-panel'
 
 defineProps<{ tabs: readonly DetailTab[], active: DetailTab }>()
 const emit = defineEmits<{ 'update:active': [tab: DetailTab] }>()

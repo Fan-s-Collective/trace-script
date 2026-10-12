@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TraceEventEnvelope } from '@trace-script/metadata'
-import { eventName } from '../../utils/ui-model'
+import { eventName } from '@/utils/ui-model'
 
 defineProps<{ related: TraceEventEnvelope[] }>()
 const emit = defineEmits<{ select: [id: string] }>()

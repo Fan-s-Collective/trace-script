@@ -1,27 +1,8 @@
 import { existsSync } from 'node:fs'
-import { dirname, extname, join, resolve, sep } from 'node:path'
+import { dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { createSimplePlugin } from 'eslint-factory'
 
-function normalizeRelativePath(source: string): Array<string> {
-  const resolved: Array<string> = []
-
-  for (const segment of source.split('/')) {
-    if (segment === '..') {
-      if (resolved.length === 0)
-        return []
-      resolved.pop()
-    }
-    else if (segment !== '.' && segment !== '') {
-      resolved.push(segment)
-    }
-  }
-
-  const firstSegment = resolved[0]
-  if (firstSegment === 'src')
-    resolved.shift()
-
-  return resolved
-}
+const importExistsCache = new Map<string, boolean>()
 
 function findSrcRoot(filename: string): string {
   let directory = dirname(resolve(filename))
@@ -36,35 +17,57 @@ function findSrcRoot(filename: string): string {
   return ''
 }
 
+/**
+ * Resolve extensionless imports against supported file extensions and directory index files.
+ */
 function getImportCandidates(target: string): Array<string> {
+  const extension = ['.ts', '.tsx', '.js', '.jsx', '.vue', '.json']
   const candidates = extname(target)
     ? [target]
-    : [target, ...['.ts', '.tsx', '.js', '.jsx', '.vue', '.json'].map(extension => `${target}${extension}`), ...['index.ts', 'index.tsx', 'index.js', 'index.jsx', 'index.vue'].map(index => join(target, index))]
+    : [target, ...extension.map(extension => `${target}${extension}`), ...['index.ts', 'index.tsx', 'index.js', 'index.jsx', 'index.vue'].map(index => join(target, index))]
 
   return candidates
 }
 
-function isExistingDirectSrcImport(source: string, filename: string, srcRoot: string): boolean {
+function importExists(target: string): boolean {
+  const cached = importExistsCache.get(target)
+  if (cached !== undefined)
+    return cached
+
+  const exists = getImportCandidates(target).some(candidate => existsSync(candidate))
+  importExistsCache.set(target, exists)
+
+  return exists
+}
+
+function resolveSrcImport(source: string, filename: string, srcRoot: string): string {
   const target = resolve(dirname(resolve(filename)), source)
-  const relativeTarget = target.slice(srcRoot.length + 1)
+  const relativeTarget = relative(srcRoot, target)
   const targetSegments = relativeTarget.split(sep)
 
-  return targetSegments.length === 1 && getImportCandidates(target).some(candidate => existsSync(candidate))
+  if (isAbsolute(relativeTarget) || targetSegments[0] === '..' || relativeTarget === '' || !importExists(target))
+    return ''
+
+  return relativeTarget.split(sep).join('/')
 }
 
 function resolveAlias(source: string, filename: string): string {
-  const resolvedPath = normalizeRelativePath(source)
   const srcRoot = findSrcRoot(filename)
 
-  if (resolvedPath.length !== 1 || srcRoot === '' || !isExistingDirectSrcImport(source, filename, srcRoot))
+  if (srcRoot === '')
     return ''
 
-  return `@/${resolvedPath[0]}`
+  const srcImport = resolveSrcImport(source, filename, srcRoot)
+  if (srcImport === '')
+    return ''
+
+  return `@/${srcImport}`
 }
 
 export default createSimplePlugin({
   name: 'no-relative-src-import',
   description: 'Use @/ aliases instead of relative imports within src.',
+  include: ['*.ts', '**/*.ts', '*.vue', '**/*.vue'],
   create(context) {
     return {
       ImportDeclaration(node) {
@@ -72,7 +75,11 @@ export default createSimplePlugin({
         if (typeof source !== 'string' || !source.startsWith('../'))
           return
 
-        const alias = resolveAlias(source, context.sourceCode.fileName)
+        const filename = context.filename
+        if (typeof filename !== 'string' || filename === '')
+          return
+
+        const alias = resolveAlias(source, filename)
         if (alias === '')
           return
 

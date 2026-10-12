@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TraceEventEnvelope } from '@trace-script/metadata'
-import { eventTokens, eventUsage } from '../../utils/ui-model'
+import { eventTokens, eventUsage } from '@/utils/ui-model'
 
 defineProps<{ event: TraceEventEnvelope }>()
 </script>

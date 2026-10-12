@@ -4,7 +4,7 @@ import { Icon } from '@iconify/vue'
 import { TRACE_EVENT_TYPE } from '@trace-script/metadata'
 import FilterSelect from '@/components/FilterSelect.vue'
 import ToolbarButton from '@/components/ToolbarButton.vue'
-import { TRACE_FILTER_VALUE, TRACE_STATUS } from '../utils/ui-model'
+import { TRACE_FILTER_VALUE, TRACE_STATUS } from '@/utils/ui-model'
 
 defineProps<{
   total: number
