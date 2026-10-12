@@ -17,3 +17,30 @@ defineProps<{ connected: boolean, eventCount: number, visibleCount: number, tota
     <span class="status-spacer" /><span class="status-item hint">↑↓ Navigate · Esc Clear selection</span>
   </footer>
 </template>
+
+<style scoped>
+.trace-status-bar {
+  display: flex;
+  min-height: 2.125rem;
+  align-items: center;
+  gap: 0;
+  border-top: 1px solid var(--divider);
+  background: var(--panel-raised);
+  color: var(--text-muted);
+}
+.status-item {
+  border-right: 1px solid var(--divider);
+  padding: 0 0.625rem;
+  white-space: nowrap;
+}
+.status-item.primary {
+  color: var(--text);
+}
+.status-spacer {
+  flex: 1;
+}
+.status-item.hint {
+  border: 0;
+  color: #70757a;
+}
+</style>

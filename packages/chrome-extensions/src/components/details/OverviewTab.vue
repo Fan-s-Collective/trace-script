@@ -7,7 +7,9 @@ defineProps<{ event: TraceEventEnvelope }>()
 </script>
 
 <template>
-  <h2>{{ eventName(event) }}</h2><p class="detail-summary">
+  <h2 class="overview-title">
+    {{ eventName(event) }}
+  </h2><p class="detail-summary">
     {{ eventSummary(event) }}
   </p>
   <dl class="details-fields">
@@ -46,3 +48,15 @@ defineProps<{ event: TraceEventEnvelope }>()
     </dd>
   </dl>
 </template>
+
+<style scoped>
+.overview-title {
+  margin: 0 0 0.375rem;
+  font-size: 0.875rem;
+}
+.detail-summary {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+</style>

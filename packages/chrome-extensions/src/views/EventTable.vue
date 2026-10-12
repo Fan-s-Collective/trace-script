@@ -34,3 +34,67 @@ function tokens(value: number | undefined): string {
     </p>
   </section>
 </template>
+
+<style scoped>
+.event-table-wrap {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+.event-table-head,
+.event-row {
+  font-size: 0.875rem;
+  display: grid;
+  grid-template-columns: 18% 20% 10% 10% 12% 13% 10% 7%;
+  align-items: center;
+}
+.event-table-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 1.875rem;
+  border-bottom: 1px solid var(--divider);
+  background: var(--panel-surface);
+  color: var(--text-muted);
+}
+.event-table-head span,
+.event-row span {
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 0.5rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.event-row {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 0;
+  border-bottom: 1px solid var(--divider);
+  background: var(--panel-bg);
+  text-align: left;
+}
+.event-row:nth-child(odd) {
+  background: #282828;
+}
+.event-row:hover,
+.event-row.selected {
+  background: #3d3d3d;
+}
+.event-row.selected {
+  box-shadow: inset 0.125rem 0 var(--accent);
+}
+.event-name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+.event-name small {
+  color: var(--text-muted);
+}
+.muted {
+  color: var(--text-muted);
+}
+.tokens {
+  text-align: right;
+}
+</style>

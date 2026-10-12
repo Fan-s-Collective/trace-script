@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { createTraceSdk } from '@trace-script/sdk'
-import { computed, ref } from 'vue'
+import { computed, shallowRef } from 'vue'
 
 interface WeatherTool {
   type: 'function'
@@ -32,11 +32,11 @@ interface ModelResponse {
 }
 
 const sdk = createTraceSdk()
-const city = ref('北京')
-const sentCount = ref(0)
-const running = ref(false)
-const status = ref('还没有运行 Trace')
-const answer = ref('')
+const city = shallowRef('北京')
+const sentCount = shallowRef(0)
+const running = shallowRef(false)
+const status = shallowRef('还没有运行 Trace')
+const answer = shallowRef('')
 
 const buttonLabel = computed(() => running.value ? '运行中…' : '运行天气 Agent')
 
@@ -67,7 +67,12 @@ async function responsesCreate(request: ModelRequest): Promise<ModelResponse> {
       : '北京'
     return {
       id: `resp_${Date.now().toString(36)}`,
-      output: [{ type: 'function_call', call_id: `call_${Date.now().toString(36)}`, name: 'get_weather', arguments: JSON.stringify({ city: requestedCity }) }],
+      output: [{
+        type: 'function_call',
+        call_id: `call_${Date.now().toString(36)}`,
+        name: 'get_weather',
+        arguments: JSON.stringify({ city: requestedCity }),
+      }],
       output_text: '',
       usage: { input_tokens: 24, output_tokens: 12, total_tokens: 36 },
     }
@@ -182,18 +187,18 @@ async function runWeatherAgent() {
 
 <style scoped>
 .playground {
-  max-width: 720px;
-  margin: 64px auto;
-  padding: 0 24px;
+  max-width: 45rem;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
   font-family: system-ui, sans-serif;
   line-height: 1.6;
 }
 
 .city-field {
   display: grid;
-  gap: 6px;
-  max-width: 280px;
-  margin: 24px 0 16px;
+  gap: 0.375rem;
+  max-width: 17.5rem;
+  margin: 1.5rem 0 1rem;
 }
 
 .agent-form {
@@ -202,16 +207,16 @@ async function runWeatherAgent() {
 }
 
 .city-field input {
-  padding: 9px 10px;
+  padding: 0.5625rem 0.625rem;
   border: 1px solid #9aa8c2;
-  border-radius: 6px;
+  border-radius: 0.375rem;
   font: inherit;
 }
 
 .send-button {
-  padding: 10px 16px;
+  padding: 0.625rem 1rem;
   border: 1px solid #2455d6;
-  border-radius: 6px;
+  border-radius: 0.375rem;
   background: #2455d6;
   color: white;
   font: inherit;
@@ -225,12 +230,12 @@ async function runWeatherAgent() {
 
 .send-button:focus-visible,
 .city-field input:focus-visible {
-  outline: 2px solid #2455d6;
-  outline-offset: 3px;
+  outline: 0.125rem solid #2455d6;
+  outline-offset: 0.1875rem;
 }
 
 .answer {
-  margin-top: 24px;
+  margin-top: 1.5rem;
   font-size: 1.2rem;
   font-weight: 600;
 }
