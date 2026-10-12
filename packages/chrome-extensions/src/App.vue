@@ -49,3 +49,40 @@ const {
     <TraceStatusBar :connected="connected" :event-count="events.length" :visible-count="visibleEvents.length" :total-tokens="totalTokens" :visible-tokens="visibleTokens" :failed-count="failedCount" :max-duration="maxDuration" :total-duration="totalDuration" />
   </main>
 </template>
+
+<style scoped>
+.trace-app {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--panel-bg);
+}
+.trace-workspace {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+}
+.resize-handle {
+  z-index: 2;
+  background: var(--divider);
+}
+.resize-handle:hover,
+.resize-handle:focus {
+  background: var(--accent);
+}
+.resize-handle-vertical {
+  height: 1px;
+  cursor: row-resize;
+}
+.resize-handle-horizontal {
+  width: 1px;
+  cursor: col-resize;
+}
+.content-workspace {
+  display: grid;
+  min-height: 0;
+  overflow: hidden;
+}
+</style>

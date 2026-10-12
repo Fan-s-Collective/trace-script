@@ -24,12 +24,13 @@
   ],
   "scripts": {
     "build": "vite build",
-    "build:dev": "vite build --mode development",
-    "dev": "vite --mode development",
+    "dev": "vite build --mode development",
+    "dev:panel": "vite --mode development",
     "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@iconify/vue": "catalog:",
     "@trace-script/core": "workspace:*",
     "@trace-script/shared": "workspace:*",
     "@vueuse/core": "catalog:",

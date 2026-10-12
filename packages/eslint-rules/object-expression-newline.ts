@@ -7,7 +7,6 @@ import { createSimplePlugin } from 'eslint-factory'
  */
 export default createSimplePlugin({
   name: 'object-expression-newline',
-  include: ['**/*.{js,jsx,ts,tsx,mjs,cjs}'],
   create(context) {
     const { sourceCode } = context
 

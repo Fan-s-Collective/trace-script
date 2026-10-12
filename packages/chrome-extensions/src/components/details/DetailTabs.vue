@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DetailTab } from '../../types/trace-panel'
+import type { DetailTab } from '@/types/trace-panel'
 
 defineProps<{ tabs: readonly DetailTab[], active: DetailTab }>()
 const emit = defineEmits<{ 'update:active': [tab: DetailTab] }>()
@@ -20,3 +20,35 @@ const emit = defineEmits<{ 'update:active': [tab: DetailTab] }>()
     </button>
   </nav>
 </template>
+
+<style scoped>
+.details-tabs {
+  display: flex;
+  height: 1.5rem;
+  flex-shrink: 0;
+  gap: 0;
+  border-bottom: 1px solid var(--divider);
+  background: var(--panel-surface);
+}
+.details-tab {
+  flex: 0 0 auto;
+  height: 1.5rem;
+  min-height: 1.5rem;
+  border: 0;
+  background: transparent;
+  padding: 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.details-tab:hover {
+  background: var(--control-hover);
+  color: var(--text);
+}
+.details-tab[aria-selected='true'] {
+  border-bottom: 0.125rem solid var(--accent);
+  color: var(--text);
+}
+</style>

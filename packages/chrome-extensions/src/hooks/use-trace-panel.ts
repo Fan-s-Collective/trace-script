@@ -1,11 +1,11 @@
 import type { TraceEventEnvelope } from '@trace-script/metadata'
 import type { ComputedRef, Ref } from 'vue'
-import type { WorkerToPanelMessage } from '../messages'
-import type { EventTypeFilter, StatusFilter, TracePanelFilter } from '../types/trace-panel'
+import type { WorkerToPanelMessage } from '@/messages'
+import type { EventTypeFilter, StatusFilter, TracePanelFilter } from '@/types/trace-panel'
 import { useEventListener, useToggle } from '@vueuse/core'
-import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
-import { EXTENSION_MESSAGE_TYPE, EXTENSION_PORT_NAME } from '../messages'
-import { eventAgent, eventDuration, eventName, eventStatus, eventTimestamp, eventTokens, TRACE_FILTER_VALUE, TRACE_STATUS } from '../utils/ui-model'
+import { computed, ref as deepRef, onMounted, onUnmounted, reactive, shallowRef } from 'vue'
+import { EXTENSION_MESSAGE_TYPE, EXTENSION_PORT_NAME } from '@/messages'
+import { eventAgent, eventDuration, eventName, eventStatus, eventTimestamp, eventTokens, TRACE_FILTER_VALUE, TRACE_STATUS } from '@/utils/ui-model'
 
 interface TracePanelState {
   events: Ref<TraceEventEnvelope[]>
@@ -40,11 +40,11 @@ export function useTracePanel(): TracePanelState {
 }
 
 function createTracePanel(): TracePanelState {
-  const events = ref<TraceEventEnvelope[]>([])
-  const selectedId = ref('')
-  const isPreview = ref(false)
-  const connected = ref(false)
-  const filtersVisible = ref(true)
+  const events = deepRef<TraceEventEnvelope[]>([])
+  const selectedId = shallowRef('')
+  const isPreview = shallowRef(false)
+  const connected = shallowRef(false)
+  const filtersVisible = shallowRef(true)
   const [recording, toggleRecording] = useToggle(true)
   const filter = reactive({
     query: '',
@@ -53,9 +53,9 @@ function createTracePanel(): TracePanelState {
     agent: TRACE_FILTER_VALUE.ALL,
     onlyErrors: false,
   })
-  const timelineHeight = ref(112)
-  const detailsWidth = ref(340)
-  const dragging = ref<'timeline' | 'details' | null>(null)
+  const timelineHeight = shallowRef(112)
+  const detailsWidth = shallowRef(340)
+  const dragging = shallowRef<'timeline' | 'details' | null>(null)
   let dragOrigin = 0
   let dragSize = 0
   let cleanup = (): void => {}
