@@ -94,7 +94,7 @@ function syncTimelineScroll(event: Event): void {
 .timeline-ruler-header {
   display: grid;
   min-width: 0;
-  grid-template-columns: 13.125rem minmax(0, 1fr);
+  grid-template-columns: 12.5rem minmax(0, 1fr);
 }
 .timeline-label-column {
   min-width: 0;
@@ -108,8 +108,8 @@ function syncTimelineScroll(event: Event): void {
   border-bottom: 1px solid var(--divider);
 }
 .timeline-ruler-header .timeline-ruler-spacer {
-  height: 1.1875rem;
-  line-height: 1.1875rem;
+  height: 1.25rem;
+  line-height: 1.25rem;
 }
 .timeline-ruler-scroll {
   min-width: 0;

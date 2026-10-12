@@ -54,7 +54,7 @@ function createTracePanel(): TracePanelState {
     onlyErrors: false,
   })
   const timelineHeight = shallowRef(112)
-  const detailsWidth = shallowRef(340)
+  const detailsWidth = shallowRef(500)
   const dragging = shallowRef<'timeline' | 'details' | null>(null)
   let dragOrigin = 0
   let dragSize = 0
@@ -106,7 +106,7 @@ function createTracePanel(): TracePanelState {
   const maxDuration = computed(() => events.value.reduce((max, event) => Math.max(max, eventDuration(event)), 0))
   const totalDuration = computed(() => events.value.reduce((sum, event) => sum + eventDuration(event), 0))
   const workspaceStyle = computed(() => ({ gridTemplateRows: `${timelineHeight.value}px 1px minmax(0, 1fr)` }))
-  const contentStyle = computed(() => ({ gridTemplateColumns: `minmax(420px, 1fr) 1px ${detailsWidth.value}px` }))
+  const contentStyle = computed(() => ({ gridTemplateColumns: `minmax(0, 1fr) 1px ${detailsWidth.value}px` }))
   function handleMessage(message: WorkerToPanelMessage): void {
     if (message.type === EXTENSION_MESSAGE_TYPE.TRACE_QUERY_RESULT) {
       events.value = [...message.events]

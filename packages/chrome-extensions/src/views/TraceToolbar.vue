@@ -50,15 +50,17 @@ const statusOptions = [
 <template>
   <header class="trace-toolbar">
     <div class="toolbar-main">
-      <button type="button" class="icon-button" :class="recording ? 'is-live' : 'is-paused'" :aria-label="recording ? 'Pause live updates' : 'Resume live updates'" :title="recording ? 'Pause live updates' : 'Resume live updates'" @click="emit('toggleRecording')">
-        <Icon :icon="recording ? 'mdi:record-circle-outline' : 'mdi:play-outline'" aria-hidden="true" />
-      </button>
-      <button type="button" class="icon-button" aria-label="Clear events" title="Clear events" @click="emit('clear')">
-        <Icon icon="mdi:delete-outline" aria-hidden="true" />
-      </button>
-      <button type="button" class="icon-button" :class="filtersVisible ? 'is-active' : ''" :aria-pressed="filtersVisible" aria-label="Toggle filters" title="Toggle filters" @click="emit('toggleFilters')">
-        <Icon icon="mdi:filter-variant" aria-hidden="true" />
-      </button>
+      <aside>
+        <button type="button" class="icon-button" :class="recording ? 'is-live' : 'is-paused'" :aria-label="recording ? 'Pause live updates' : 'Resume live updates'" :title="recording ? 'Pause live updates' : 'Resume live updates'" @click="emit('toggleRecording')">
+          <Icon :icon="recording ? 'mdi:record-circle-outline' : 'mdi:play-outline'" aria-hidden="true" />
+        </button>
+        <button type="button" class="icon-button" aria-label="Clear events" title="Clear events" @click="emit('clear')">
+          <Icon icon="mdi:delete-outline" aria-hidden="true" />
+        </button>
+        <button type="button" class="icon-button" :class="filtersVisible ? 'is-active' : ''" :aria-pressed="filtersVisible" aria-label="Toggle filters" title="Toggle filters" @click="emit('toggleFilters')">
+          <Icon icon="mdi:filter-variant" aria-hidden="true" />
+        </button>
+      </aside>
       <span class="toolbar-divider" />
       <div v-show="filtersVisible" class="filter-bar">
         <input v-model="query" class="trace-search" type="search" placeholder="Search name or ID…" aria-label="Search name or ID">
@@ -71,10 +73,10 @@ const statusOptions = [
       </div>
       <span class="event-count">{{ visible }} of {{ total }}</span>
       <template v-if="preview">
-        <span class="preview-badge">Preview</span>
         <ToolbarButton label="Add 10 events" @click="emit('add')">
           Add 10 events
         </ToolbarButton>
+        <span class="preview-badge">Preview</span>
       </template>
     </div>
   </header>
@@ -150,20 +152,18 @@ const statusOptions = [
 .trace-search {
   width: 12.5rem;
   height: 1.875rem;
-  line-height: 1.875rem;
   border: 1px solid var(--control-border);
   border-radius: 3px;
   background: #202124;
-  padding: 0 0.5rem;
-}
-.trace-search::placeholder {
-  font-size: 0.75rem;
+  padding: 0.375rem 0.5rem;
+  line-height: 1rem;
 }
 .filter-button {
   border-color: var(--control-border);
   background: var(--control-bg);
   padding: 0 0.5rem;
   white-space: nowrap;
+  border-radius: 3px;
 }
 .filter-button.is-error {
   border-color: var(--danger);

@@ -82,6 +82,7 @@ const {
 }
 .content-workspace {
   display: grid;
+  min-width: 0;
   min-height: 0;
   overflow: hidden;
 }

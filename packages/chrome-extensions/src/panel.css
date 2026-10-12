@@ -71,10 +71,10 @@ select:focus-visible {
   text-align: center;
 }
 .status-dot {
-  display: inline-block;
-  width: 0.4375rem;
-  height: 0.4375rem;
-  margin-right: 0.3125rem;
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.5rem;
   border-radius: 50%;
   background: var(--success);
 }

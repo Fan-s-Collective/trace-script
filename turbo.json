@@ -15,8 +15,11 @@
       "dependsOn": ["build:deps", "^typecheck"]
     },
     "//#typecheck:root": {},
+    "dev:panel": {
+      "dependsOn": ["^build:deps"]
+    },
     "dev": {
-      "dependsOn": ["build:deps", "^build:deps"],
+      "dependsOn": ["build:deps", "^build:deps", "dev:panel"],
       "cache": false,
       "persistent": true
     },

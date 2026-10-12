@@ -50,5 +50,6 @@ const related = computed(() => props.event
   min-height: 0;
   padding: 0.625rem;
   scrollbar-gutter: auto;
+  font-size: 0.875rem;
 }
 </style>

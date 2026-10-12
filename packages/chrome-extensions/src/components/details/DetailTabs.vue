@@ -24,7 +24,7 @@ const emit = defineEmits<{ 'update:active': [tab: DetailTab] }>()
 <style scoped>
 .details-tabs {
   display: flex;
-  height: 1.5rem;
+  height: auto;
   flex-shrink: 0;
   gap: 0;
   border-bottom: 1px solid var(--divider);
@@ -32,23 +32,25 @@ const emit = defineEmits<{ 'update:active': [tab: DetailTab] }>()
 }
 .details-tab {
   flex: 0 0 auto;
-  height: 1.5rem;
-  min-height: 1.5rem;
+  height: auto;
+  min-height: 0;
   border: 0;
   background: transparent;
-  padding: 0 0.5rem;
+  padding: 8px 1rem;
   color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
+  border-bottom: 2px solid var(--panel-surface);
 }
 .details-tab:hover {
   background: var(--control-hover);
   color: var(--text);
+  border-bottom: 2px solid var(--control-hover);
 }
 .details-tab[aria-selected='true'] {
-  border-bottom: 0.125rem solid var(--accent);
-  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+  color: var(--accent);
 }
 </style>

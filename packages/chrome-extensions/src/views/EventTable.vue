@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TraceEventEnvelope } from '@trace-script/metadata'
-import { eventSummary } from '@/trace-display'
 import { eventAgent, eventDuration, eventModel, eventName, eventStatus, eventTokens, eventTraceId, formatDuration } from '@/utils/ui-model'
 
 defineProps<{ events: TraceEventEnvelope[], selectedId: string }>()
@@ -31,12 +30,11 @@ const columns = [
     <div v-if="events.length" class="event-table-body">
       <button v-for="event in events" :key="event.eventId" type="button" class="event-row" :class="{ selected: event.eventId === selectedId }" :aria-selected="event.eventId === selectedId" @click="emit('select', event.eventId)">
         <span class="truncate" :title="eventTraceId(event)">{{ eventTraceId(event) }}</span>
-        <span class="truncate event-name"><strong>{{ eventName(event) }}</strong>
-          <small>{{ eventSummary(event) }}</small></span>
+        <span class="truncate event-name"><strong>{{ eventName(event) }}</strong></span>
         <span class="truncate">{{ eventAgent(event) }}</span>
         <span class="tabular-nums">{{ formatDuration(eventDuration(event)) }}</span>
         <span class="truncate muted">{{ event.type }}</span>
-        <span :class="`status-${eventStatus(event)}`"><i class="status-dot" />{{ eventStatus(event) }}</span>
+        <span class="event-status" :class="`status-${eventStatus(event)}`"><i class="status-dot" />{{ eventStatus(event) }}</span>
         <span class="truncate">{{ eventModel(event) }}</span>
         <span class="tabular-nums tokens">{{ tokens(eventTokens(event)) }}</span>
       </button>
@@ -59,12 +57,13 @@ const columns = [
   display: grid;
   grid-template-columns: 18% 20% 10% 10% 12% 13% 10% 7%;
   align-items: center;
+  border-bottom: 1px solid var(--divider);
 }
 .event-table-head {
   position: sticky;
   top: 0;
   z-index: 1;
-  height: 1.875rem;
+  height: auto;
   border-bottom: 1px solid var(--divider);
   background: var(--panel-surface);
   color: var(--text-muted);
@@ -76,6 +75,10 @@ const columns = [
   padding: 0 0.5rem;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.event-table-head span {
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 .event-row {
   width: 100%;
@@ -100,13 +103,14 @@ const columns = [
   flex-direction: column;
   gap: 0.125rem;
 }
-.event-name small {
-  color: var(--text-muted);
+.event-status {
+  display: inline-flex;
+  align-items: center;
 }
 .muted {
   color: var(--text-muted);
 }
 .tokens {
-  text-align: right;
+  text-align: left;
 }
 </style>

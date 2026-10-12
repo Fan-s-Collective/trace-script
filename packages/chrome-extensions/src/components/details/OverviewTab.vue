@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { TraceEventEnvelope } from '@trace-script/metadata'
-import { eventSummary } from '@/trace-display'
-import { eventAgent, eventModel, eventName, eventStatus, eventTraceId } from '@/utils/ui-model'
+import { eventAgent, eventModel, eventStatus, eventTraceId } from '@/utils/ui-model'
 
 const props = defineProps<{ event: TraceEventEnvelope }>()
 
@@ -18,12 +17,6 @@ const fields = [
 </script>
 
 <template>
-  <h2 class="overview-title">
-    {{ eventName(event) }}
-  </h2>
-  <p class="detail-summary">
-    {{ eventSummary(event) }}
-  </p>
   <dl class="details-fields">
     <template v-for="field in fields" :key="field.label">
       <dt class="details-field-label">
@@ -35,15 +28,3 @@ const fields = [
     </template>
   </dl>
 </template>
-
-<style scoped>
-.overview-title {
-  margin: 0 0 0.375rem;
-  font-size: 0.875rem;
-}
-.detail-summary {
-  margin: 0 0 0.75rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-</style>

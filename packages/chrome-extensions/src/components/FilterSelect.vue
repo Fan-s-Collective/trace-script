@@ -27,10 +27,12 @@ function handleChange(event: Event): void {
   white-space: nowrap;
 }
 .filter-control-select {
+  width: auto;
   height: 1.75rem;
   border: 1px solid var(--control-border);
   border-radius: 0.1875rem;
   background: var(--control-bg);
-  padding: 0 0.375rem;
+  padding: 0 6px;
+  field-sizing: content;
 }
 </style>
