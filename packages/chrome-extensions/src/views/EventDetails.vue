@@ -2,7 +2,7 @@
 import type { TraceEventEnvelope } from '@trace-script/metadata'
 import type { DetailTab } from '@/types/trace-panel'
 import { computed, shallowRef, watch } from 'vue'
-import { Detail, Overview, Payload, Raw, Relations, Timing, Usage } from '@/components/details'
+import { Detail, Overview, Payload, Raw, Relations, Timming, Usage } from '@/components/details'
 import { eventPayload } from '@/utils/ui-model'
 
 const props = defineProps<{ event?: TraceEventEnvelope, siblings: TraceEventEnvelope[] }>()
@@ -27,7 +27,7 @@ const related = computed(() => props.event
         <Overview v-if="tab === 'Overview'" :event="event" />
         <Usage v-else-if="tab === 'Usage'" :event="event" />
         <Payload v-else-if="tab === 'Payload'" :payload="payload" />
-        <Timing v-else-if="tab === 'Timing'" :event="event" />
+        <Timming v-else-if="tab === 'Timing'" :event="event" />
         <Relations v-else-if="tab === 'Relations'" :related="related" @select="emit('select', $event)" />
         <Raw v-else :value="event" />
       </div>

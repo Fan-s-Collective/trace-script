@@ -14,7 +14,8 @@ defineProps<{ connected: boolean, eventCount: number, visibleCount: number, tota
     <span class="status-item" :class="failedCount ? 'status-failed' : ''"><strong>{{ failedCount }}</strong> failed</span>
     <span class="status-item">Max duration: <strong>{{ formatDuration(maxDuration) }}</strong></span>
     <span class="status-item">Total duration: <strong>{{ formatDuration(totalDuration) }}</strong></span>
-    <span class="status-spacer" /><span class="status-item hint">↑↓ Navigate · Esc Clear selection</span>
+    <span class="status-spacer" />
+    <span class="status-item hint">↑↓ Navigate · Esc Clear selection</span>
   </footer>
 </template>
 

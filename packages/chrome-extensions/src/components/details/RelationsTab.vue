@@ -9,9 +9,17 @@ const emit = defineEmits<{ select: [id: string] }>()
 <template>
   <p class="details-section-label">
     Trace and event links
-  </p><button v-for="item in related" :key="item.eventId" type="button" class="details-relation" @click="emit('select', item.eventId)">
+  </p>
+  <button
+    v-for="item in related"
+    :key="item.eventId"
+    type="button"
+    class="details-relation"
+    @click="emit('select', item.eventId)"
+  >
     {{ eventName(item) }} · #{{ item.sequence }}
-  </button><p v-if="!related.length" class="empty-state">
+  </button>
+  <p v-if="!related.length" class="empty-state">
     No related events
   </p>
 </template>

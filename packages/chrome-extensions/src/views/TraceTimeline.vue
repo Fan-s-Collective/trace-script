@@ -58,7 +58,8 @@ function syncTimelineScroll(event: Event): void {
       <div class="timeline-layout">
         <div class="timeline-label-column">
           <div v-for="group in groups" :key="group.type" class="timeline-label-row">
-            <span class="timeline-label" :title="group.type"><strong>{{ group.type }}</strong><small>{{ group.rows.length }} events</small></span>
+            <span class="timeline-label" :title="group.type"><strong>{{ group.type }}</strong>
+              <small>{{ group.rows.length }} events</small></span>
           </div>
         </div>
         <div ref="eventsScroll" class="timeline-events-scroll" @scroll="syncTimelineScroll">

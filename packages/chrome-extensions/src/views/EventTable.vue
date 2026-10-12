@@ -10,17 +10,29 @@ function tokens(value: number | undefined): string {
     return '—'
   return value > 999 ? `${(value / 1000).toFixed(1)}k` : String(value)
 }
+
+const columns = [
+  { key: 'trace-id', label: 'Trace ID' },
+  { key: 'name', label: 'Name' },
+  { key: 'agent', label: 'Agent' },
+  { key: 'duration', label: 'Duration' },
+  { key: 'type', label: 'Type' },
+  { key: 'status', label: 'Status' },
+  { key: 'model', label: 'Model' },
+  { key: 'tokens', label: 'Tokens' },
+] as const
 </script>
 
 <template>
   <section class="event-table-wrap" aria-label="Trace events">
     <div class="event-table-head">
-      <span>Trace ID</span><span>Name</span><span>Agent</span><span>Duration</span><span>Type</span><span>Status</span><span>Model</span><span>Tokens</span>
+      <span v-for="column in columns" :key="column.key">{{ column.label }}</span>
     </div>
     <div v-if="events.length" class="event-table-body">
       <button v-for="event in events" :key="event.eventId" type="button" class="event-row" :class="{ selected: event.eventId === selectedId }" :aria-selected="event.eventId === selectedId" @click="emit('select', event.eventId)">
         <span class="truncate" :title="eventTraceId(event)">{{ eventTraceId(event) }}</span>
-        <span class="truncate event-name"><strong>{{ eventName(event) }}</strong><small>{{ eventSummary(event) }}</small></span>
+        <span class="truncate event-name"><strong>{{ eventName(event) }}</strong>
+          <small>{{ eventSummary(event) }}</small></span>
         <span class="truncate">{{ eventAgent(event) }}</span>
         <span class="tabular-nums">{{ formatDuration(eventDuration(event)) }}</span>
         <span class="truncate muted">{{ event.type }}</span>
