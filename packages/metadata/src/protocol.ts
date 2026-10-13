@@ -21,8 +21,8 @@ export const TRACE_EVENT_TYPES = [
 ] as const
 
 const identifierSchema = z.string().min(1).max(200)
-// The Mugeda editor currently provides Zod 3 at runtime while the SDK is
-// authored against Zod 4. Keep the wire validation compatible with both.
+// Keep timestamp parsing compatible with Zod 3 runtimes while using Zod 4's
+// JSON schema for request and response payloads.
 const timestampSchema = z.iso?.datetime
   ? z.iso.datetime({ offset: false })
   : z.string().datetime({ offset: false })
@@ -33,7 +33,7 @@ const eventFields = {
   timestamp: timestampSchema,
 }
 
-const jsonObjectSchema = z.record(z.string(), z.any())
+const jsonObjectSchema = z.record(z.string(), z.json())
 
 export const traceEventEnvelopeSchema = z.discriminatedUnion('type', [
   z.strictObject({ ...eventFields, type: z.literal(TRACE_EVENT_TYPE.TRACE_START) }),

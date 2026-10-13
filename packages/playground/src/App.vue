@@ -45,6 +45,15 @@ const sentCount = shallowRef(0)
 const running = shallowRef(false)
 const status = shallowRef('还没有运行 Trace')
 const answer = shallowRef('')
+const activeTab = shallowRef<'overview' | 'payload'>('overview')
+const timeline = shallowRef<TimelineItem[]>([
+  { label: '用户输入', detail: '等待运行', type: 'input', state: 'idle' },
+  { label: '模型响应', detail: 'Responses API', type: 'model', state: 'idle' },
+  { label: '工具调用', detail: 'get_weather', type: 'tool', state: 'idle' },
+  { label: '最终输出', detail: 'output_text', type: 'output', state: 'idle' },
+])
+const lastRequest = shallowRef<ModelRequest | false>(false)
+const lastResponse = shallowRef<ModelResponse | false>(false)
 
 const buttonLabel = computed(() => running.value ? '运行中' : '运行 Agent')
 const runCountLabel = computed(() => sentCount.value === 0 ? '尚未运行' : `${sentCount.value} 次运行`)
