@@ -23,30 +23,26 @@
     "trace-script"
   ],
   "scripts": {
-    "build": "tsdown --config-loader tsx",
-    "build:dev": "TRACE_SCRIPT_BUILD_MODE=development tsdown --config-loader tsx",
-    "dev": "TRACE_SCRIPT_BUILD_MODE=development tsdown --config-loader tsx --watch",
-    "dev:panel": "nuxt dev apps/panel",
-    "typecheck": "tsc --noEmit",
-    "typecheck:panel": "nuxt prepare apps/panel && vue-tsc --noEmit -p apps/panel/.nuxt/tsconfig.json",
-    "package:chrome": "pnpm build && tsx scripts/package.ts",
-    "prepare:panel": "nuxt prepare apps/panel"
+    "build": "vite build",
+    "dev": "vite build --watch --mode development",
+    "dev:panel": "vite --mode development",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "class-variance-authority": "catalog:ui",
+    "@iconify/vue": "catalog:",
+    "@trace-script/core": "workspace:*",
+    "@trace-script/shared": "workspace:*",
+    "@vueuse/core": "catalog:",
     "vue": "catalog:ui"
   },
   "devDependencies": {
     "@tailwindcss/vite": "catalog:build",
+    "@trace-script/metadata": "workspace:*",
     "@trace-script/tsconfig": "workspace:*",
     "@types/chrome": "catalog:types",
     "@types/node": "catalog:types",
-    "nuxt": "catalog:build",
-    "shadcn-nuxt": "catalog:build",
-    "tailwindcss": "catalog:build",
-    "tsdown": "catalog:build",
-    "tsx": "catalog:dev",
     "typescript": "catalog:dev",
-    "vue-tsc": "catalog:dev"
+    "vite": "catalog:build"
   }
 }

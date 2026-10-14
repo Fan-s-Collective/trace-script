@@ -7,22 +7,27 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "dist-dev/**"]
     },
-    "build:dev": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist-dev/**"]
+    "build:deps": {
+      "dependsOn": ["^build:deps"],
+      "outputs": ["dist/**", "dist-dev/**"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["build:deps", "^typecheck"]
     },
-    "typecheck:panel": {},
     "//#typecheck:root": {},
-    "dev": {
+    "dev:panel": {
+      "dependsOn": ["^build:deps"],
       "cache": false,
       "persistent": true
     },
-    "dev:panel": {
+    "dev": {
+      "dependsOn": ["build:deps", "^build:deps"],
+      "with": ["dev:panel"],
       "cache": false,
       "persistent": true
+    },
+    "test": {
+      "dependsOn": ["build:deps"]
     }
   }
 }

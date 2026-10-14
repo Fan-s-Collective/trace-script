@@ -1,15 +1,11 @@
 # Chrome extension
 
-This package owns Manifest V3 entry points and the Nuxt DevTools panel. The panel is an internal module, not another workspace. Chrome APIs stay in the extension adapters; protocol types and platform-independent behavior belong to their existing packages.
+This package receives envelopes emitted by `@trace-script/sdk` and displays them in a Manifest V3 DevTools panel. The transport is deliberately small:
 
-Run `pnpm build` from this package to assemble `dist`, or `pnpm build:dev` to assemble `dist-dev`. Both commands enter through tsdown; its completion hook generates the static Nuxt SPA and assembles the extension. Nuxt's internal Vite pipeline is the explicitly approved exception. Load the chosen directory from Chrome's extensions page with developer mode enabled, then open a page's DevTools and select **Agent Trace**. Reload the extension after rebuilding. `pnpm dev` watches entry points and panel sources, producing fresh static development assets in that same order. `pnpm dev:panel` provides a standalone panel preview during UI development.
+```text
+SDK window.postMessage -> content script -> service worker -> Agent Trace panel
+```
 
-For a focused build from the repository root, run `pnpm --filter @trace-script/chrome-extensions build:dev`. In `chrome://extensions`, select **Load unpacked** and choose `packages/chrome-extensions/dist-dev`. Open DevTools on the playground or another web page. If **Agent Trace** is hidden, select it from the toolbar's overflow menu. After reloading the extension, close and reopen DevTools to register a fresh panel. The panel should display **Ready** and the package version.
+The worker validates every event with `@trace-script/core`, keeps events isolated by inspected tab, and sends an initial snapshot plus live additions to the panel. Invalid or legacy event shapes are ignored so the panel renders the SDK protocol.
 
-The initial manifest declares no site access and does not activate the content-script entry. Site authorization and ingestion are delivered in their planned stage. The service worker and content entry are intentionally empty until then.
-
-The build sets the panel asset base to `./`, disables inline import maps, and externalizes Nuxt's executable bootstrap scripts. JSON payload scripts remain inert data. Production assets use local files and system fonts; no remote scripts, CDN, or server process are required.
-
-Acceptance criteria: repeatable development and production assembly, a local DevTools registration, a Nuxt panel displaying the build version, and no executable inline scripts under the extension CSP. Root Vitest tests cover manifest constraints, bootstrap extraction, and badge variants. Browser verification and actual Chrome installation checks are recorded separately so automated checks do not imply manual acceptance.
-
-The build and manifest tests share `scripts/create-manifest.ts`, which generates the manifest at build time. DevTools registration runs directly from its entry, without a forwarding helper or unused callback, and skips registration when DevTools APIs are unavailable.
+Run `pnpm build` from this package to assemble `dist`, or `pnpm build:dev` to assemble the development extension in `dist-dev`. Load the chosen directory from Chrome's extensions page with developer mode enabled, then open a page's DevTools and select **Agent Trace**. Reload the extension after rebuilding. Use `pnpm dev` for the live Vite preview at `panel.html`; it does not rebuild the unpacked extension directory.

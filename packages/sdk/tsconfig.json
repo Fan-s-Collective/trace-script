@@ -4,6 +4,7 @@
     "@trace-script/tsconfig/base.json"
   ],
   "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "paths": {
       "@/*": ["./src/*"]
     }

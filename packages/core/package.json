@@ -20,12 +20,14 @@
   ],
   "scripts": {
     "build": "tsdown",
+    "build:deps": "tsdown",
     "dev": "tsdown --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest"
   },
   "dependencies": {
     "@trace-script/metadata": "workspace:*",
-    "@trace-script/shared": "workspace:*"
+    "zod": "catalog:validation"
   },
   "devDependencies": {
     "@trace-script/tsconfig": "workspace:*",

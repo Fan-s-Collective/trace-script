@@ -1,0 +1,12 @@
+@import '../node_modules/tailwindcss/index.css';
+
+@theme {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@layer base {
+  body {
+    margin: 0;
+  }
+}

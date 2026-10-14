@@ -1,0 +1,55 @@
+<script setup lang="ts">
+import type { TraceEventEnvelope } from '@trace-script/metadata'
+import type { DetailTab } from '@/types/trace-panel'
+import { computed, shallowRef, watch } from 'vue'
+import { Detail, Overview, Payload, Raw, Relations, Timming, Usage } from '@/components/details'
+import { eventPayload } from '@/utils/ui-model'
+
+const props = defineProps<{ event?: TraceEventEnvelope, siblings: TraceEventEnvelope[] }>()
+const emit = defineEmits<{ select: [id: string] }>()
+const tabs: readonly DetailTab[] = ['Overview', 'Usage', 'Payload', 'Timing', 'Relations', 'Raw']
+const tab = shallowRef<DetailTab>('Overview')
+
+watch(() => props.event?.eventId, () => {
+  tab.value = 'Overview'
+})
+const payload = computed(() => props.event ? eventPayload(props.event) : {})
+const related = computed(() => props.event
+  ? props.siblings.filter(item => item.traceId === props.event!.traceId && item.eventId !== props.event!.eventId)
+  : [])
+</script>
+
+<template>
+  <aside class="details-panel" aria-label="Event details">
+    <template v-if="event">
+      <Detail v-model:active="tab" :tabs="tabs" />
+      <div class="details-content min-h-0 flex-1 overflow-auto">
+        <Overview v-if="tab === 'Overview'" :event="event" />
+        <Usage v-else-if="tab === 'Usage'" :event="event" />
+        <Payload v-else-if="tab === 'Payload'" :payload="payload" />
+        <Timming v-else-if="tab === 'Timing'" :event="event" />
+        <Relations v-else-if="tab === 'Relations'" :related="related" @select="emit('select', $event)" />
+        <Raw v-else :value="event" />
+      </div>
+    </template>
+    <p v-else class="empty-state">
+      Select an event to inspect details
+    </p>
+  </aside>
+</template>
+
+<style scoped>
+.details-panel {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  background: var(--panel-surface);
+}
+.details-content {
+  min-height: 0;
+  padding: 0.625rem;
+  scrollbar-gutter: auto;
+  font-size: 0.875rem;
+}
+</style>
