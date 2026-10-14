@@ -35,4 +35,12 @@ describe('minimal protocol parser', () => {
     circular.self = circular
     expect(safeParseTraceEvent({ ...start, type: 'model.response', payload: circular }).success).toBeFalsy()
   })
+
+  it('preserves correlation fields without changing provider payloads', () => {
+    const payload = { id: 'provider-response', output: [] }
+    expect(parseTraceEvent({ ...start, type: 'model.response', requestId: 'attempt-1', payload })).toMatchObject({ requestId: 'attempt-1', payload })
+    expect(safeParseTraceEvent({ ...start, type: 'model.request', requestId: '', payload: {} }).success).toBeFalsy()
+    expect(parseTraceEvent({ ...start, type: 'tool.result', payload: { callId: 'tool-1', output: '', status: 'failed', message: 'timeout' } })).toMatchObject({ payload: { output: '', status: 'failed' } })
+    expect(safeParseTraceEvent({ ...start, type: 'trace.error', payload: { message: 'bad', requestId: 'r', callId: 'c' } }).success).toBeFalsy()
+  })
 })

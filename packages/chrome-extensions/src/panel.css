@@ -70,14 +70,6 @@ select:focus-visible {
   color: var(--text-muted);
   text-align: center;
 }
-.status-dot {
-  display: block;
-  width: 0.5rem;
-  height: 0.5rem;
-  margin-right: 0.5rem;
-  border-radius: 50%;
-  background: var(--success);
-}
 .status-success {
   color: var(--success);
 }
@@ -89,15 +81,6 @@ select:focus-visible {
 }
 .status-cancelled {
   color: var(--text-muted);
-}
-.status-running .status-dot {
-  background: var(--warning);
-}
-.status-failed .status-dot {
-  background: var(--danger);
-}
-.status-cancelled .status-dot {
-  background: var(--text-muted);
 }
 .details-fields {
   display: grid;
@@ -139,4 +122,14 @@ select:focus-visible {
   line-height: 1.5;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+.status-waiting,
+.status-incomplete,
+.status-interrupted,
+.status-conflict {
+  color: var(--warning);
+}
+.status-unknown {
+  color: var(--text-muted);
 }

@@ -1,39 +1,36 @@
 <script setup lang="ts">
-import type { TraceEventEnvelope } from '@trace-script/metadata'
+import type { TraceRecord, TraceSummary } from '@trace-script/core'
 import type { DetailTab } from '@/types/trace-panel'
-import { computed, shallowRef, watch } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { Detail, Overview, Payload, Raw, Relations, Timming, Usage } from '@/components/details'
-import { eventPayload } from '@/utils/ui-model'
 
-const props = defineProps<{ event?: TraceEventEnvelope, siblings: TraceEventEnvelope[] }>()
+const props = defineProps<{ record?: TraceRecord, traces: TraceSummary[] }>()
 const emit = defineEmits<{ select: [id: string] }>()
-const tabs: readonly DetailTab[] = ['Overview', 'Usage', 'Payload', 'Timing', 'Relations', 'Raw']
-const tab = shallowRef<DetailTab>('Overview')
-
-watch(() => props.event?.eventId, () => {
-  tab.value = 'Overview'
-})
-const payload = computed(() => props.event ? eventPayload(props.event) : {})
-const related = computed(() => props.event
-  ? props.siblings.filter(item => item.traceId === props.event!.traceId && item.eventId !== props.event!.eventId)
-  : [])
+const tabs: readonly DetailTab[] = ['Input / Output', 'Overview', 'Usage', 'Timing', 'Relations', 'Raw Events']
+const tab = shallowRef<DetailTab>('Input / Output')
+const trace = computed(() => props.traces.find(trace => trace.traceId === props.record?.traceId))
 </script>
 
 <template>
-  <aside class="details-panel" aria-label="Event details">
-    <template v-if="event">
+  <aside class="details-panel" aria-label="Call details">
+    <template v-if="record">
       <Detail v-model:active="tab" :tabs="tabs" />
-      <div class="details-content min-h-0 flex-1 overflow-auto">
-        <Overview v-if="tab === 'Overview'" :event="event" />
-        <Usage v-else-if="tab === 'Usage'" :event="event" />
-        <Payload v-else-if="tab === 'Payload'" :payload="payload" />
-        <Timming v-else-if="tab === 'Timing'" :event="event" />
-        <Relations v-else-if="tab === 'Relations'" :related="related" @select="emit('select', $event)" />
-        <Raw v-else :value="event" />
+      <div class="details-content" role="tabpanel" :aria-label="tab">
+        <Payload v-if="tab === 'Input / Output'" :record="record" />
+        <Overview v-else-if="tab === 'Overview'" :record="record" />
+        <Usage v-else-if="tab === 'Usage'" :record="record" />
+        <Timming v-else-if="tab === 'Timing'" :record="record" />
+        <Relations
+          v-else-if="tab === 'Relations' && trace"
+          :record="record"
+          :trace="trace"
+          @select="emit('select', $event)"
+        />
+        <Raw v-else :record="record" />
       </div>
     </template>
     <p v-else class="empty-state">
-      Select an event to inspect details
+      Select a Trace or call to inspect details
     </p>
   </aside>
 </template>
@@ -47,9 +44,10 @@ const related = computed(() => props.event
   background: var(--panel-surface);
 }
 .details-content {
+  flex: 1;
   min-height: 0;
-  padding: 0.625rem;
-  scrollbar-gutter: auto;
-  font-size: 0.875rem;
+  overflow: auto;
+  padding: 0.75rem;
+  font-size: 0.8125rem;
 }
 </style>

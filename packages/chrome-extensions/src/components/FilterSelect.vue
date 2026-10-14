@@ -1,21 +1,28 @@
-<script setup lang="ts">
-defineProps<{ modelValue: string, options: readonly string[], label: string, allLabel: string }>()
-const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
+<script setup lang="ts" generic="T extends string">
+const props = defineProps<{ modelValue: T, options: readonly T[], label: string, allLabel: string }>()
+const emit = defineEmits<{ 'update:modelValue': [value: T] }>()
+
 function handleChange(event: Event): void {
-  emit('update:modelValue', (event.target as HTMLSelectElement).value)
+  const value = (event.target as HTMLSelectElement).value
+  const option = props.options.find(option => option === value)
+  if (option !== undefined)
+    emit('update:modelValue', option)
 }
 </script>
 
 <template>
-  <label class="filter-control"><select
-    class="filter-control-select"
-    :value="modelValue"
-    :aria-label="label"
-    @change="handleChange"
-  >
-    <option v-for="option in options" :key="option" :value="option">{{ option === 'all' ? allLabel : option }}
-    </option>
-  </select></label>
+  <label class="filter-control">
+    <select
+      class="filter-control-select"
+      :value="modelValue"
+      :aria-label="label"
+      @change="handleChange"
+    >
+      <option v-for="option in options" :key="option" :value="option">
+        {{ option === 'all' ? allLabel : option }}
+      </option>
+    </select>
+  </label>
 </template>
 
 <style scoped>

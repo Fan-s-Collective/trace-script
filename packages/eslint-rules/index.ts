@@ -1,3 +1,4 @@
+import htmlAttributesNewline from './html-attributes-newline'
 import htmlTagNewline from './html-tag-newline'
 import noRef from './no-ref'
 import noRelativeSrcImport from './no-relative-src-import'
@@ -12,4 +13,5 @@ export default [
   noRef,
   noRelativeSrcImport,
   htmlTagNewline,
+  htmlAttributesNewline,
 ]

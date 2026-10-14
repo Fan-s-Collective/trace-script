@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import type { TraceEventEnvelope } from '@trace-script/metadata'
+import type { EventTypeFilter, StatusFilter } from '@/types/trace-panel'
 import { Icon } from '@iconify/vue'
-import { TRACE_EVENT_TYPE } from '@trace-script/metadata'
 import FilterSelect from '@/components/FilterSelect.vue'
 import ToolbarButton from '@/components/ToolbarButton.vue'
 import { TRACE_FILTER_VALUE, TRACE_STATUS } from '@/utils/ui-model'
@@ -24,59 +23,95 @@ const emit = defineEmits<{
   toggleErrors: []
 }>()
 const query = defineModel<string>('query', { required: true })
-const type = defineModel<typeof TRACE_FILTER_VALUE.ALL | TraceEventEnvelope['type']>('type', { required: true })
-const status = defineModel<typeof TRACE_FILTER_VALUE.ALL | typeof TRACE_STATUS[keyof typeof TRACE_STATUS]>('status', { required: true })
+const type = defineModel<EventTypeFilter>('type', { required: true })
+const status = defineModel<StatusFilter>('status', { required: true })
 const agent = defineModel<string>('agent', { required: true })
 
-const typeOptions = [
-  TRACE_FILTER_VALUE.ALL,
-  TRACE_EVENT_TYPE.TRACE_START,
-  TRACE_EVENT_TYPE.MODEL_REQUEST,
-  TRACE_EVENT_TYPE.MODEL_RESPONSE,
-  TRACE_EVENT_TYPE.TOOL_RESULT,
-  TRACE_EVENT_TYPE.TRACE_END,
-  TRACE_EVENT_TYPE.TRACE_ERROR,
-] as const
-
-const statusOptions = [
-  TRACE_FILTER_VALUE.ALL,
-  TRACE_STATUS.SUCCESS,
-  TRACE_STATUS.RUNNING,
-  TRACE_STATUS.FAILED,
-  TRACE_STATUS.CANCELLED,
-] as const
+const typeOptions = [TRACE_FILTER_VALUE.ALL, 'model', 'tool'] as const
+const statusOptions = [TRACE_FILTER_VALUE.ALL, ...Object.values(TRACE_STATUS)]
 </script>
 
 <template>
   <header class="trace-toolbar">
     <div class="toolbar-main">
       <aside>
-        <button type="button" class="icon-button" :class="recording ? 'is-live' : 'is-paused'" :aria-label="recording ? 'Pause live updates' : 'Resume live updates'" :title="recording ? 'Pause live updates' : 'Resume live updates'" @click="emit('toggleRecording')">
+        <button
+          type="button"
+          class="icon-button"
+          :class="recording ? 'is-live' : 'is-paused'"
+          :aria-label="recording ? 'Pause live updates' : 'Resume live updates'"
+          :title="recording ? 'Pause live updates' : 'Resume live updates'"
+          @click="emit('toggleRecording')"
+        >
           <Icon :icon="recording ? 'mdi:record-circle-outline' : 'mdi:play-outline'" aria-hidden="true" />
         </button>
-        <button type="button" class="icon-button" aria-label="Clear events" title="Clear events" @click="emit('clear')">
+        <button
+          type="button"
+          class="icon-button"
+          aria-label="Clear traces"
+          title="Clear traces"
+          @click="emit('clear')"
+        >
           <Icon icon="mdi:delete-outline" aria-hidden="true" />
         </button>
-        <button type="button" class="icon-button" :class="filtersVisible ? 'is-active' : ''" :aria-pressed="filtersVisible" aria-label="Toggle filters" title="Toggle filters" @click="emit('toggleFilters')">
+        <button
+          type="button"
+          class="icon-button"
+          :class="filtersVisible ? 'is-active' : ''"
+          :aria-pressed="filtersVisible"
+          aria-label="Toggle filters"
+          title="Toggle filters"
+          @click="emit('toggleFilters')"
+        >
           <Icon icon="mdi:filter-variant" aria-hidden="true" />
         </button>
       </aside>
       <span class="toolbar-divider" />
       <div v-show="filtersVisible" class="filter-bar">
-        <input v-model="query" class="trace-search" type="search" placeholder="Search name or ID…" aria-label="Search name or ID">
-        <FilterSelect v-model="type" label="Type" all-label="All types" :options="typeOptions" />
-        <FilterSelect v-model="status" label="Status" all-label="All statuses" :options="statusOptions" />
-        <FilterSelect v-model="agent" label="Agent" all-label="All agents" :options="agents" />
-        <button type="button" class="filter-button" :class="onlyErrors ? 'is-error' : ''" @click="emit('toggleErrors')">
+        <input
+          v-model="query"
+          class="trace-search"
+          type="search"
+          placeholder="Search name or ID…"
+          aria-label="Search name or ID"
+        >
+        <FilterSelect
+          v-model="type"
+          label="Type"
+          all-label="All types"
+          :options="typeOptions"
+        />
+        <FilterSelect
+          v-model="status"
+          label="Status"
+          all-label="All statuses"
+          :options="statusOptions"
+        />
+        <FilterSelect
+          v-model="agent"
+          label="Agent"
+          all-label="All agents"
+          :options="agents"
+        />
+        <button
+          type="button"
+          class="filter-button"
+          :class="onlyErrors ? 'is-error' : ''"
+          @click="emit('toggleErrors')"
+        >
           Only errors
         </button>
       </div>
-      <span class="event-count">{{ visible }} of {{ total }}</span>
+      <span class="event-count">
+        {{ visible }} of {{ total }} calls
+      </span>
       <template v-if="preview">
-        <ToolbarButton label="Add 10 events" @click="emit('add')">
-          Add 10 events
+        <ToolbarButton label="Add sample Trace" @click="emit('add')">
+          Add sample Trace
         </ToolbarButton>
-        <span class="preview-badge">Preview</span>
+        <span class="preview-badge">
+          Preview
+        </span>
       </template>
     </div>
   </header>
@@ -91,6 +126,7 @@ const statusOptions = [
 }
 .toolbar-main {
   display: flex;
+  flex-wrap: wrap;
   min-width: 0;
   align-items: center;
   gap: 0.5rem;

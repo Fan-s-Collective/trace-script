@@ -1,54 +1,36 @@
 <script setup lang="ts">
-import { formatDuration } from '@/utils/ui-model'
+import type { UsageSummary } from '@trace-script/core'
+import { amountText } from '@/utils/ui-model'
 
-defineProps<{ connected: boolean, eventCount: number, visibleCount: number, totalTokens: number, visibleTokens: number, failedCount: number, maxDuration: number, totalDuration: number }>()
+defineProps<{ connected: boolean, traceCount: number, callCount: number, visibleCount: number, totalUsage: UsageSummary, visibleUsage: UsageSummary, failedCount: number }>()
 </script>
 
 <template>
-  <footer class="trace-status-bar py-1" aria-label="Trace summary">
-    <span class="status-item primary">
-      <i class="status-dot" :class="connected ? 'status-success' : 'status-failed'" />
-      {{ connected ? 'Connected' : 'Disconnected' }}
+  <footer class="trace-status-bar" aria-label="Call summary">
+    <span>{{ connected ? 'Connected' : 'Disconnected' }}</span>
+    <span>{{ traceCount }} traces · {{ callCount }} calls · {{ visibleCount }} matched</span>
+    <span>All model tokens — In: {{ amountText(totalUsage.input) }} · Out: {{ amountText(totalUsage.output) }} · Total: {{ amountText(totalUsage.total) }}</span>
+    <span>Matched model tokens — In: {{ amountText(visibleUsage.input) }} · Out: {{ amountText(visibleUsage.output) }} · Total: {{ amountText(visibleUsage.total) }}</span>
+    <span :class="{ 'status-failed': failedCount }">
+      {{ failedCount }} failed calls
     </span>
-    <span class="status-item"><strong>{{ eventCount }}</strong> events</span>
-    <span class="status-item"><strong>{{ visibleCount }}</strong> visible</span>
-    <span class="status-item"><strong>{{ totalTokens }}</strong> tokens</span>
-    <span class="status-item"><strong>{{ visibleTokens }}</strong> visible tokens</span>
-    <span class="status-item" :class="failedCount ? 'status-failed' : ''"><strong>{{ failedCount }}</strong> failed</span>
-    <span class="status-item">Max duration: <strong>{{ formatDuration(maxDuration) }}</strong></span>
-    <span class="status-item">Total duration: <strong>{{ formatDuration(totalDuration) }}</strong></span>
-    <span class="status-spacer" />
-    <span class="status-item hint">↑↓ Navigate</span>
+    <span>↑↓ Navigate</span>
   </footer>
 </template>
 
 <style scoped>
 .trace-status-bar {
   display: flex;
-  align-items: center;
-  gap: 0;
-  font-size: 0.875rem;
+  flex-wrap: wrap;
+  gap: 4px 0;
   border-top: 1px solid var(--divider);
+  padding: 6px 0;
   background: var(--panel-raised);
   color: var(--text-muted);
+  font-size: 0.6875rem;
 }
-.status-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
+.trace-status-bar span {
   border-right: 1px solid var(--divider);
   padding: 0 0.625rem;
-  white-space: nowrap;
-}
-.status-item.primary {
-  gap: 0;
-  color: var(--text);
-}
-.status-spacer {
-  flex: 1;
-}
-.status-item.hint {
-  border: 0;
-  color: #70757a;
 }
 </style>

@@ -24,6 +24,7 @@ const emit = defineEmits<{ 'update:active': [tab: DetailTab] }>()
 <style scoped>
 .details-tabs {
   display: flex;
+  overflow-x: auto;
   height: auto;
   flex-shrink: 0;
   gap: 0;
@@ -36,9 +37,9 @@ const emit = defineEmits<{ 'update:active': [tab: DetailTab] }>()
   min-height: 0;
   border: 0;
   background: transparent;
-  padding: 8px 1rem;
+  padding: 8px 0.625rem;
   color: var(--text-muted);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
