@@ -19,7 +19,8 @@
       "dependsOn": ["^build:deps"]
     },
     "dev": {
-      "dependsOn": ["build:deps", "^build:deps", "dev:panel"],
+      "dependsOn": ["build:deps", "^build:deps"],
+      "with": ["dev:panel"],
       "cache": false,
       "persistent": true
     },
