@@ -1,3 +1,4 @@
+import type { Rule } from './index'
 import { createSimplePlugin } from 'eslint-factory'
 
 const dimensionPattern = /[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?px(?![-\w])/iy
@@ -66,7 +67,7 @@ function findPxDimensions(text: string): Array<{ start: number, end: number, rep
       continue
     }
 
-    if (index === 0 || !identifierCharacterPattern.test(text[index - 1])) {
+    if (index === 0 || !identifierCharacterPattern.test(text.charAt(index - 1))) {
       urlPattern.lastIndex = index
       if (urlPattern.test(text)) {
         index = skipUrl(text, index)
@@ -97,7 +98,7 @@ function findPxDimensions(text: string): Array<{ start: number, end: number, rep
   return dimensions
 }
 
-export default createSimplePlugin({
+export const pxToRem: Rule = createSimplePlugin({
   name: 'px-to-rem',
   description: 'Convert CSS px dimensions to rem using a 16px base.',
   include: ['**/*.css', '**/*.scss', '**/*.vue'],

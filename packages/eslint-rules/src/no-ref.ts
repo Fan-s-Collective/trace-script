@@ -1,6 +1,7 @@
+import type { Rule } from './index'
 import { createSimplePlugin } from 'eslint-factory'
 
-export default createSimplePlugin({
+export const noRef: Rule = createSimplePlugin({
   name: 'no-ref',
   create(context) {
     return {

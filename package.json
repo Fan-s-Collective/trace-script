@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:lint",
+    "@trace-script/eslint-rules": "workspace:*",
     "@trace-script/tsconfig": "workspace:*",
     "@types/chrome": "catalog:types",
     "@types/node": "catalog:types",
@@ -27,7 +28,6 @@
     "@vitest/coverage-v8": "catalog:test",
     "@vue/test-utils": "catalog:test",
     "eslint": "catalog:lint",
-    "eslint-factory": "catalog:lint",
     "eslint-plugin-format": "catalog:lint",
     "happy-dom": "catalog:test",
     "lint-staged": "catalog:lint",
@@ -46,6 +46,6 @@
     "commit-msg": "node scripts/verify-commit.mjs \"$1\""
   },
   "lint-staged": {
-    "*": "eslint --fix"
+    "*": "pnpm lint:fix --"
   }
 }
