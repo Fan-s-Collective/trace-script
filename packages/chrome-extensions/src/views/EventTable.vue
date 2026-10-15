@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import type { VisibleTrace } from '@/types/trace-panel'
-import TraceSummaryRow from '@/components/TraceSummaryRow.vue'
+import type { CallRecord } from '@trace-script/core'
 import { timingText, tokenText } from '@/utils/ui-model'
 
-defineProps<{ groups: VisibleTrace[], selectedId: string, collapsedIds: string[] }>()
-const emit = defineEmits<{ select: [id: string], toggle: [id: string] }>()
+defineProps<{ calls: CallRecord[], selectedId: string }>()
+const emit = defineEmits<{ select: [id: string] }>()
 const columns = ['Name', 'Type', 'Status', 'Model', 'Agent', 'Duration / return interval', 'Input tokens', 'Output tokens', 'Total tokens']
 </script>
 
@@ -15,54 +14,39 @@ const columns = ['Name', 'Type', 'Status', 'Model', 'Agent', 'Duration / return 
         {{ column }}
       </span>
     </div>
-    <div v-if="groups.length" class="event-table-body">
-      <section v-for="group in groups" :key="group.trace.id" class="trace-group">
-        <TraceSummaryRow
-          :trace="group.trace"
-          :matched="group.calls.length"
-          :collapsed="collapsedIds.includes(group.trace.id)"
-          :selected="selectedId === group.trace.id"
-          @select="emit('select', group.trace.id)"
-          @toggle="emit('toggle', group.trace.id)"
-        />
-        <div v-show="!collapsedIds.includes(group.trace.id)">
-          <button
-            v-for="call in group.calls"
-            :key="call.id"
-            type="button"
-            class="event-row"
-            :class="{ selected: call.id === selectedId }"
-            :aria-pressed="call.id === selectedId"
-            @click="emit('select', call.id)"
-          >
-            <span class="event-name" :title="call.name">
-              {{ call.name }}
-              <small v-if="call.issues.length">
-                ⚠ Data incomplete or conflicting
-              </small>
-            </span>
-            <span>{{ call.kind }}</span>
-            <span :class="`status-${call.status}`">
-              {{ call.status }}
-            </span>
-            <span :title="call.model">
-              {{ call.model }}
-            </span>
-            <span :title="call.agent">
-              {{ call.agent }}
-            </span>
-            <span :title="call.kind === 'tool' ? 'Return interval includes waiting, scheduling and execution' : 'Observed request to final response interval'">
-              {{ timingText(call.timing) }}
-            </span>
-            <span>{{ tokenText(call.tokens.input) }}</span>
-            <span>{{ tokenText(call.tokens.output) }}</span>
-            <span>{{ tokenText(call.tokens.total) }}</span>
-          </button>
-          <p v-if="!group.calls.length && group.trace.errors.length" class="trace-error">
-            {{ group.trace.errors.join('; ') }}
-          </p>
-        </div>
-      </section>
+    <div v-if="calls.length" class="event-table-body">
+      <button
+        v-for="call in calls"
+        :key="call.id"
+        type="button"
+        class="event-row"
+        :class="{ selected: call.id === selectedId }"
+        :aria-pressed="call.id === selectedId"
+        @click="emit('select', call.id)"
+      >
+        <span class="event-name" :title="`${call.name} · ${call.traceId} · ${call.callId}`">
+          {{ call.name }}
+          <small v-if="call.issues.length">
+            ⚠ Data incomplete or conflicting
+          </small>
+        </span>
+        <span>{{ call.kind }}</span>
+        <span :class="`status-${call.status}`">
+          {{ call.status }}
+        </span>
+        <span :title="call.model">
+          {{ call.model }}
+        </span>
+        <span :title="call.agent">
+          {{ call.agent }}
+        </span>
+        <span :title="call.kind === 'tool' ? 'Return interval includes waiting, scheduling and execution' : 'Observed request to final response interval'">
+          {{ timingText(call.timing) }}
+        </span>
+        <span>{{ tokenText(call.tokens.input) }}</span>
+        <span>{{ tokenText(call.tokens.output) }}</span>
+        <span>{{ tokenText(call.tokens.total) }}</span>
+      </button>
     </div>
     <p v-else class="empty-state">
       No calls match these filters
@@ -79,8 +63,10 @@ const columns = ['Name', 'Type', 'Status', 'Model', 'Agent', 'Duration / return 
 .event-table-head,
 .event-row {
   display: grid;
-  min-width: 53.75rem;
-  grid-template-columns: minmax(9.375rem, 1fr) 3.75rem 5.625rem 6.875rem 4.6875rem 8.125rem 4.6875rem 5rem 5rem;
+  min-width: 59.5rem;
+  grid-template-columns:
+    minmax(10rem, 1.6fr) minmax(4rem, 0.55fr) minmax(6rem, 0.8fr) minmax(8rem, 1.2fr) minmax(6rem, 1fr)
+    minmax(9rem, 1.3fr) repeat(3, minmax(5.5rem, 0.8fr));
   align-items: center;
   border-bottom: 1px solid var(--divider);
   font-size: 0.75rem;
@@ -117,15 +103,9 @@ const columns = ['Name', 'Type', 'Status', 'Model', 'Agent', 'Duration / return 
 .event-row .event-name {
   display: flex;
   flex-direction: column;
-  padding-left: 1.5rem;
 }
 .event-name small {
   color: var(--warning);
   font-size: 0.625rem;
-}
-.trace-error {
-  margin: 0;
-  padding: 0.75rem;
-  color: var(--danger);
 }
 </style>

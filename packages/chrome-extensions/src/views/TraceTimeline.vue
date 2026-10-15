@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { CallRecord } from '@trace-script/core'
-import type { VisibleTrace } from '@/types/trace-panel'
 import { computed } from 'vue'
 import { formatDuration, timingText } from '@/utils/ui-model'
 
-const props = defineProps<{ groups: VisibleTrace[], selectedId: string }>()
+const props = defineProps<{ calls: CallRecord[], selectedId: string }>()
 const emit = defineEmits<{ select: [id: string] }>()
-const timestamps = computed(() => props.groups.flatMap(group => [group.trace.timing, ...group.calls.map(call => call.timing)]).flatMap(timing => [timing.start, timing.end].flatMap(value => value ? [Date.parse(value)] : [])).filter(Number.isFinite))
+const kinds: CallRecord['kind'][] = ['model', 'tool']
+const groups = computed(() => kinds.map(kind => ({ kind, calls: props.calls.filter(call => call.kind === kind) })).filter(group => group.calls.length))
+const timestamps = computed(() => props.calls.flatMap(call => [call.timing.start, call.timing.end].flatMap(value => value ? [Date.parse(value)] : [])).filter(Number.isFinite))
 const first = computed(() => timestamps.value.length ? Math.min(...timestamps.value) : 0)
 const span = computed(() => Math.max(1, ...timestamps.value.map(value => value - first.value)))
 const ticks = computed(() => Array.from({ length: 5 }, (_, index) => ({ label: formatDuration(span.value * index / 4), position: index * 25 })))
@@ -28,39 +29,32 @@ function barStyle(call: CallRecord): Record<string, string> {
           </span>
         </div>
       </div>
-      <section v-for="group in groups" :key="group.trace.id">
-        <button
-          class="timeline-trace"
-          :class="{ selected: group.trace.id === selectedId }"
-          :title="`${group.trace.timing.start ?? 'Missing start'} → ${group.trace.timing.end ?? 'Not ended'}`"
-          @click="emit('select', group.trace.id)"
-        >
-          {{ group.trace.traceId }} · Trace interval: {{ timingText(group.trace.timing, group.trace.status === 'running') }}
-        </button>
-        <div
-          v-for="call in group.calls"
-          :key="call.id"
-          class="timeline-row"
-          :class="{ selected: call.id === selectedId }"
-        >
-          <button class="timeline-label" :title="`${call.kind}: ${call.name} · ${call.callId}`" @click="emit('select', call.id)">
-            {{ call.name }}
-            <small>{{ call.kind }}</small>
+      <section
+        v-for="group in groups"
+        :key="group.kind"
+        class="timeline-row"
+        :aria-label="`${group.kind} calls`"
+      >
+        <div class="timeline-label">
+          {{ group.kind }}
+          <small>{{ group.calls.length }} calls</small>
+        </div>
+        <div class="timeline-track">
+          <button
+            v-for="call in group.calls"
+            :key="call.id"
+            class="timeline-bar"
+            :class="[`bar-${call.status}`, { marker: call.timing.duration === undefined, selected: call.id === selectedId }]"
+            :style="barStyle(call)"
+            :aria-pressed="call.id === selectedId"
+            :aria-label="`${call.name} · ${call.traceId} · ${call.callId}: ${call.kind === 'tool' ? 'Return interval' : 'Duration'} ${timingText(call.timing)}; ${call.status}`"
+            :title="`${call.name} · ${call.traceId} · ${call.callId} · ${call.kind === 'tool' ? 'Return interval' : 'Duration'}: ${timingText(call.timing)} · ${call.status}`"
+            @click="emit('select', call.id)"
+          >
+            <span v-if="(call.timing.duration ?? 0) > span * 0.1">
+              {{ timingText(call.timing) }}
+            </span>
           </button>
-          <div class="timeline-track">
-            <button
-              class="timeline-bar"
-              :class="[`bar-${call.status}`, { marker: call.timing.duration === undefined }]"
-              :style="barStyle(call)"
-              :aria-label="`${call.name}: ${call.kind === 'tool' ? 'Return interval' : 'Duration'} ${timingText(call.timing)}; ${call.status}`"
-              :title="`${call.name} · ${call.kind === 'tool' ? 'Return interval' : 'Duration'}: ${timingText(call.timing)} · ${call.status}`"
-              @click="emit('select', call.id)"
-            >
-              <span v-if="(call.timing.duration ?? 0) > span * 0.1">
-                {{ timingText(call.timing) }}
-              </span>
-            </button>
-          </div>
         </div>
       </section>
     </div>
@@ -106,24 +100,15 @@ function barStyle(call: CallRecord): Record<string, string> {
   padding-top: 6px;
   white-space: nowrap;
 }
-.timeline-trace {
-  display: block;
-  width: 100%;
-  min-width: 41.25rem;
-  min-height: 1.75rem;
-  border: 0;
-  border-bottom: 1px solid var(--divider);
-  padding: 6px 0.75rem;
-  background: var(--panel-surface);
-  text-align: left;
-  color: var(--text-muted);
-  font-size: 0.6875rem;
-}
 .timeline-row {
   height: 1.875rem;
   border-bottom: 1px solid var(--divider);
 }
 .timeline-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   overflow: hidden;
   border: 0;
   border-right: 1px solid var(--divider);
@@ -173,11 +158,8 @@ function barStyle(call: CallRecord): Record<string, string> {
 .marker {
   border: 1px dashed var(--text-muted);
 }
-.selected {
-  background: var(--control-hover);
-  box-shadow: inset 2px 0 var(--accent);
-}
-.selected .timeline-bar {
+.timeline-bar.selected {
+  z-index: 1;
   outline: 1px solid white;
 }
 </style>

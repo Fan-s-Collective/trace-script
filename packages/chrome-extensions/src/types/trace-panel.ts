@@ -1,4 +1,4 @@
-import type { CallRecord, CallStatus, TraceStatus, TraceSummary } from '@trace-script/core'
+import type { CallStatus, TraceStatus } from '@trace-script/core'
 
 export type EventTypeFilter = 'all' | 'model' | 'tool'
 export type StatusFilter = 'all' | CallStatus | TraceStatus
@@ -8,9 +8,5 @@ export interface TracePanelFilter {
   status: StatusFilter
   agent: string
   onlyErrors: boolean
-}
-export interface VisibleTrace {
-  trace: TraceSummary
-  calls: CallRecord[]
 }
 export type DetailTab = 'Input / Output' | 'Overview' | 'Usage' | 'Timing' | 'Relations' | 'Raw Events'

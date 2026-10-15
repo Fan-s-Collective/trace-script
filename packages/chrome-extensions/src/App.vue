@@ -18,18 +18,15 @@ const {
   filter,
   agents,
   visibleCalls,
-  visibleTraces,
   totalUsage,
   visibleUsage,
   failedCount,
-  collapsedIds,
   timelineHeight,
   detailsWidth,
   workspaceStyle,
   contentStyle,
   toggleRecording,
   selectEvent,
-  toggleTrace,
   clearEvents,
   addPreviewEvents,
   startResize,
@@ -57,7 +54,7 @@ const {
       @toggle-errors="filter.onlyErrors = !filter.onlyErrors"
     />
     <div class="trace-workspace" :style="workspaceStyle">
-      <TraceTimeline :groups="visibleTraces" :selected-id="activeId" @select="selectEvent" />
+      <TraceTimeline :calls="visibleCalls" :selected-id="activeId" @select="selectEvent" />
       <div
         class="resize-handle resize-handle-vertical"
         role="separator"
@@ -69,11 +66,9 @@ const {
       />
       <div class="content-workspace" :style="contentStyle">
         <EventTable
-          :groups="visibleTraces"
+          :calls="visibleCalls"
           :selected-id="activeId"
-          :collapsed-ids="collapsedIds"
           @select="selectEvent"
-          @toggle="toggleTrace"
         />
         <div
           class="resize-handle resize-handle-horizontal"

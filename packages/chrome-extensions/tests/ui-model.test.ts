@@ -2,10 +2,10 @@ import type { TracePanelFilter } from '@/types/trace-panel'
 import { aggregateEvents } from '@trace-script/core'
 import { describe, expect, it } from 'vitest'
 import { previewEvents } from '@/preview'
-import { amountText, matchesCall, matchesTrace, timingText, tokenText } from '@/utils/ui-model'
+import { amountText, matchesCall, timingText, tokenText } from '@/utils/ui-model'
 
 const filter: TracePanelFilter = { query: '', type: 'all', status: 'all', agent: 'all', onlyErrors: false }
-const [trace] = aggregateEvents(previewEvents)
+const trace = aggregateEvents(previewEvents)[0]!
 
 describe('aggregated UI model', () => {
   it('filters calls by type, status, agent, name, Trace ID, call ID and source event ID', () => {
@@ -17,17 +17,18 @@ describe('aggregated UI model', () => {
     expect(trace.calls.filter(call => matchesCall(call, { ...filter, query: 'preview-trace' }))).toHaveLength(3)
   })
 
-  it('includes failed Trace summaries with no failed calls without relabelling successful calls', () => {
+  it('filters failed calls without relabelling successful calls after a Trace failure', () => {
     const events = previewEvents.filter(event => event.type !== 'trace.end')
-    const [failed] = aggregateEvents([...events, {
+    const failed = aggregateEvents([...events, {
       eventId: 'error',
       traceId: 'preview-trace',
       sequence: 7,
       timestamp: '2024-01-01T12:00:02.100Z',
       type: 'trace.error',
       payload: { message: 'late failure' },
-    }])
-    expect(matchesTrace(failed, { ...filter, onlyErrors: true })).toBeTruthy()
+    }])[0]!
+    expect(failed.status).toBe('failed')
+    expect(failed.errors).toContain('late failure')
     expect(failed.calls.filter(call => matchesCall(call, { ...filter, onlyErrors: true }))).toHaveLength(0)
     expect(failed.calls.every(call => call.status === 'success')).toBeTruthy()
   })

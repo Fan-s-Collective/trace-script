@@ -1,4 +1,4 @@
-import type { CallRecord, Timing, TokenAmount, TraceSummary } from '@trace-script/core'
+import type { CallRecord, Timing, TokenAmount } from '@trace-script/core'
 import type { TracePanelFilter } from '@/types/trace-panel'
 
 export const TRACE_FILTER_VALUE = { ALL: 'all' } as const
@@ -21,16 +21,6 @@ export function matchesCall(call: CallRecord, filter: TracePanelFilter): boolean
     && (filter.status === 'all' || call.status === filter.status)
     && (filter.agent === 'all' || call.agent === filter.agent)
     && (!filter.onlyErrors || call.status === 'failed')
-}
-
-export function matchesTrace(trace: TraceSummary, filter: TracePanelFilter): boolean {
-  const haystack = `${trace.traceId} ${trace.events.map(event => event.eventId).join(' ')} ${trace.errors.join(' ')}`.toLowerCase()
-  const queryMatches = !filter.query || haystack.includes(filter.query.toLowerCase())
-  const statusMatches = filter.status === 'all' || trace.status === filter.status
-  if (filter.onlyErrors)
-    return (trace.status === 'failed' || trace.errors.length > 0) && queryMatches && statusMatches
-  return queryMatches && statusMatches && filter.type === 'all' && filter.agent === 'all'
-    && (!trace.calls.length || filter.status !== 'all')
 }
 
 export function formatDuration(value: number): string {
