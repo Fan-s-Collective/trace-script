@@ -11,8 +11,10 @@ withDefaults(defineProps<{
 
 <template>
   <button
-    type="button" class="toolbar-button"
-    :class="[{ 'toolbar-button-active': active }, `toolbar-button-${tone}`]" :aria-label="label"
+    type="button"
+    class="toolbar-button"
+    :class="[{ 'toolbar-button-active': active }, `toolbar-button-${tone}`]"
+    :aria-label="label"
   >
     <slot>{{ label }}</slot>
   </button>
