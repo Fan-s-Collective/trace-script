@@ -133,7 +133,9 @@ function syncTimelineScroll(event: Event): void {
               v-for="tick in ticks"
               :key="`label-${tick.position}`"
               class="timeline-tick"
-            >{{ formatTime(tick.value) }}</span>
+            >
+              {{ formatTime(tick.value) }}
+            </span>
           </div>
         </div>
       </div>

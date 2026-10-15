@@ -498,7 +498,9 @@ onUnmounted(() => {
               :key="tick.time"
               class="agent-work-overview__tick"
               :style="{ left: `${tick.position}%` }"
-            >{{ formatMilliseconds(tick.time) }}</span>
+            >
+              {{ formatMilliseconds(tick.time) }}
+            </span>
           </div>
         </div>
       </header>
@@ -543,7 +545,9 @@ onUnmounted(() => {
           :id="activeOptionId"
           :aria-selected="focusedId === selectedId"
           role="option"
-        >{{ focusedLabel }}</span>
+        >
+          {{ focusedLabel }}
+        </span>
       </div>
 
       <div

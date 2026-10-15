@@ -76,6 +76,33 @@ function getObjectWhitespaceGaps(text: string, expression: AST.ESLintObjectExpre
   return gaps
 }
 
+function getInterpolationGaps(text: string, node: AST.VStartTag, indent: string, newline: string): AttributeGap[] {
+  let ancestor: AST.VElement | AST.VDocumentFragment = node.parent
+  while (ancestor.type === 'VElement') {
+    if (['pre', 'textarea', 'script', 'style'].includes(ancestor.name))
+      return []
+    ancestor = ancestor.parent
+  }
+
+  const { children, endTag } = node.parent
+  const content = children.filter(child => child.type !== 'VText' || child.value.trim())
+  const [expression] = content
+  if (!endTag || content.length !== 1 || expression?.type !== 'VExpressionContainer')
+    return []
+
+  const gaps: AttributeGap[] = [
+    {
+      range: [node.range[1], expression.range[0]],
+      replacement: newline + getChildIndent(indent),
+    },
+    {
+      range: [expression.range[1], endTag.range[0]],
+      replacement: newline + indent,
+    },
+  ]
+  return gaps.filter(gap => !newlinePattern.test(text.slice(...gap.range)))
+}
+
 function getTagIndent(text: string, node: AST.VStartTag): string {
   const lineStart = text.lastIndexOf('\n', node.range[0] - 1) + 1
   return text.slice(lineStart, node.range[0]).match(indentPattern)?.[0] ?? ''
@@ -103,7 +130,7 @@ const htmlAttrNewlineRule: ESLintRule.RuleModule = {
     const services = sourceCode.parserServices as DocumentParserServices
 
     return services.defineDocumentVisitor({
-      /** Format whitespace inside the start tag without changing its content. */
+      /** Format attributes and standalone Vue interpolations without rewriting expressions. */
       VStartTag(node) {
         if (node.attributes.length <= maxAttributes)
           return
@@ -112,13 +139,14 @@ const htmlAttrNewlineRule: ESLintRule.RuleModule = {
         const indent = getTagIndent(text, node)
         const newline = text.includes('\r\n') ? '\r\n' : '\n'
         const gaps = getStartTagGaps(text, node, indent, newline)
+        gaps.push(...getInterpolationGaps(text, node, indent, newline))
 
         if (gaps.length === 0)
           return
 
         context.report({
           loc: node.loc,
-          message: `Put each attribute and the closing bracket on separate lines when a tag has more than ${maxAttributes} attributes.`,
+          message: `Put each attribute, the closing bracket, and standalone Vue interpolation content on separate lines when a tag has more than ${maxAttributes} attributes.`,
           fix: fixer => gaps.map(gap => fixer.replaceTextRange(gap.range, gap.replacement)),
         })
       },

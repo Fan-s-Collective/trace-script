@@ -17,7 +17,8 @@ function handleChange(event: Event): void {
       v-for="option in options"
       :key="option"
       :value="option"
-    >{{ option === 'all' ? allLabel : option }}
+    >
+      {{ option === 'all' ? allLabel : option }}
     </option>
   </select></label>
 </template>
