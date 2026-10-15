@@ -1,4 +1,5 @@
 import type { createSimplePlugin } from 'eslint-factory'
+import { htmlAttrNewline, htmlDocumentAttrNewline } from './html-attr-newline'
 import { htmlTagNewline } from './html-tag-newline'
 import { noRef } from './no-ref'
 import { noRelativeSrcImport } from './no-relative-src-import'
@@ -15,6 +16,8 @@ const eslintRules: Array<Rule> = [
   noRef,
   noRelativeSrcImport,
   htmlTagNewline,
+  htmlAttrNewline,
+  htmlDocumentAttrNewline,
 ]
 
 export default eslintRules

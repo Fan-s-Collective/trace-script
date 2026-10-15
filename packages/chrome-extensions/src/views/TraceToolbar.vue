@@ -63,20 +63,60 @@ const statusOptions = [
         >
           <Icon :icon="recording ? 'mdi:record-circle-outline' : 'mdi:play-outline'" aria-hidden="true" />
         </button>
-        <button type="button" class="icon-button" aria-label="Clear events" title="Clear events" @click="emit('clear')">
+        <button
+          type="button"
+          class="icon-button"
+          aria-label="Clear events"
+          title="Clear events"
+          @click="emit('clear')"
+        >
           <Icon icon="mdi:delete-outline" aria-hidden="true" />
         </button>
-        <button type="button" class="icon-button" :class="filtersVisible ? 'is-active' : ''" :aria-pressed="filtersVisible" aria-label="Toggle filters" title="Toggle filters" @click="emit('toggleFilters')">
+        <button
+          type="button"
+          class="icon-button"
+          :class="filtersVisible ? 'is-active' : ''"
+          :aria-pressed="filtersVisible"
+          aria-label="Toggle filters"
+          title="Toggle filters"
+          @click="emit('toggleFilters')"
+        >
           <Icon icon="mdi:filter-variant" aria-hidden="true" />
         </button>
       </aside>
       <span class="toolbar-divider" />
       <div v-show="filtersVisible" class="filter-bar">
-        <input v-model="query" class="trace-search" type="search" placeholder="Search name or ID…" aria-label="Search name or ID">
-        <FilterSelect v-model="type" label="Type" all-label="All types" :options="typeOptions" />
-        <FilterSelect v-model="status" label="Status" all-label="All statuses" :options="statusOptions" />
-        <FilterSelect v-model="agent" label="Agent" all-label="All agents" :options="agents" />
-        <button type="button" class="filter-button" :class="onlyErrors ? 'is-error' : ''" @click="emit('toggleErrors')">
+        <input
+          v-model="query"
+          class="trace-search"
+          type="search"
+          placeholder="Search name or ID…"
+          aria-label="Search name or ID"
+        >
+        <FilterSelect
+          v-model="type"
+          label="Type"
+          all-label="All types"
+          :options="typeOptions"
+        />
+        <FilterSelect
+          v-model="status"
+          label="Status"
+          all-label="All statuses"
+          :options="statusOptions"
+        />
+        <FilterSelect
+          v-model="agent"
+          label="Agent"
+          all-label="All agents"
+          :options="agents"
+        />
+        <button
+          type="button"
+          class="filter-button"
+          :class="onlyErrors ? 'is-error' : ''"
+          @click="emit('toggleErrors')"
+        >
           Only errors
         </button>
       </div>

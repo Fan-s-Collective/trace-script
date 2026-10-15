@@ -350,10 +350,20 @@ async function runWeatherAgent() {
           </div>
           <div class="flex flex-wrap items-center justify-end gap-2">
             <div class="flex rounded-lg bg-slate-100 p-1" aria-label="Timeline data size">
-              <button type="button" class="rounded-md px-2.5 py-1 font-mono text-[10px]" :class="stressMode ? 'text-slate-500' : 'bg-white text-indigo-700 shadow-sm'" @click="setStressMode(false)">
+              <button
+                type="button"
+                class="rounded-md px-2.5 py-1 font-mono text-[10px]"
+                :class="stressMode ? 'text-slate-500' : 'bg-white text-indigo-700 shadow-sm'"
+                @click="setStressMode(false)"
+              >
                 6 items
               </button>
-              <button type="button" class="rounded-md px-2.5 py-1 font-mono text-[10px]" :class="stressMode ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'" @click="setStressMode(true)">
+              <button
+                type="button"
+                class="rounded-md px-2.5 py-1 font-mono text-[10px]"
+                :class="stressMode ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500'"
+                @click="setStressMode(true)"
+              >
                 2,400 items
               </button>
             </div>
@@ -385,7 +395,17 @@ async function runWeatherAgent() {
         <form class="mt-9" @submit.prevent="runWeatherAgent">
           <label for="city" class="mb-2 block text-xs font-semibold text-slate-600">你想了解哪个城市的天气？</label>
           <div class="flex flex-col gap-2 sm:flex-row">
-            <input id="city" v-model="city" :disabled="running" autocomplete="off" class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-slate-50/50 px-3.5 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 disabled:cursor-wait disabled:opacity-60"><button type="submit" :disabled="running" class="flex min-h-11 items-center justify-center gap-4 rounded-lg bg-indigo-700 px-4 text-sm font-semibold text-white transition hover:-translate-y-px hover:bg-indigo-800 disabled:cursor-wait disabled:opacity-60">
+            <input
+              id="city"
+              v-model="city"
+              :disabled="running"
+              autocomplete="off"
+              class="min-w-0 flex-1 rounded-lg border border-slate-300 bg-slate-50/50 px-3.5 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100 disabled:cursor-wait disabled:opacity-60"
+            ><button
+              type="submit"
+              :disabled="running"
+              class="flex min-h-11 items-center justify-center gap-4 rounded-lg bg-indigo-700 px-4 text-sm font-semibold text-white transition hover:-translate-y-px hover:bg-indigo-800 disabled:cursor-wait disabled:opacity-60"
+            >
               <span>{{ buttonLabel }}</span>
               <span class="text-lg font-normal">↗</span>
             </button>
@@ -408,7 +428,11 @@ async function runWeatherAgent() {
           <span class="font-mono text-[10px] text-slate-400">{{ completedSteps }} / 4 完成</span>
         </div>
         <div class="mt-6">
-          <div v-for="(item, index) in timeline" :key="item.type" class="flex min-h-12 items-start">
+          <div
+            v-for="(item, index) in timeline"
+            :key="item.type"
+            class="flex min-h-12 items-start"
+          >
             <div class="flex w-7 shrink-0 flex-col items-center">
               <span class="z-10 grid h-5 w-5 place-items-center rounded-full font-mono text-[10px]" :class="timelineStepClass(item)">{{ timelineStepLabel(item, index) }}</span>
               <span v-if="index < timeline.length - 1" class="h-7 w-px bg-slate-200" />
@@ -451,7 +475,11 @@ async function runWeatherAgent() {
           </div>
           <p>运行后，模型的最终回答会显示在这里</p>
         </div>
-        <p class="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4 font-mono text-[10px] text-slate-400" role="status" aria-live="polite">
+        <p
+          class="mt-5 flex items-center gap-2 border-t border-slate-100 pt-4 font-mono text-[10px] text-slate-400"
+          role="status"
+          aria-live="polite"
+        >
           <span class="h-1.5 w-1.5 rounded-full" :class="statusIndicatorClass" />{{ status }}
         </p>
       </div>
@@ -467,10 +495,18 @@ async function runWeatherAgent() {
           </h2>
         </div>
         <div class="flex gap-1 rounded-lg bg-slate-200/70 p-1" role="tablist">
-          <button class="rounded-md px-3 py-1.5 text-[11px] transition" :class="activeTab === 'overview' ? 'bg-white font-semibold text-indigo-700 shadow-sm' : 'text-slate-500'" @click="activeTab = 'overview'">
+          <button
+            class="rounded-md px-3 py-1.5 text-[11px] transition"
+            :class="activeTab === 'overview' ? 'bg-white font-semibold text-indigo-700 shadow-sm' : 'text-slate-500'"
+            @click="activeTab = 'overview'"
+          >
             概览
           </button>
-          <button class="rounded-md px-3 py-1.5 text-[11px] transition" :class="activeTab === 'payload' ? 'bg-white font-semibold text-indigo-700 shadow-sm' : 'text-slate-500'" @click="activeTab = 'payload'">
+          <button
+            class="rounded-md px-3 py-1.5 text-[11px] transition"
+            :class="activeTab === 'payload' ? 'bg-white font-semibold text-indigo-700 shadow-sm' : 'text-slate-500'"
+            @click="activeTab = 'payload'"
+          >
             JSON
           </button>
         </div>

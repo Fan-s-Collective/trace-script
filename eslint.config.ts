@@ -2,6 +2,7 @@ import antfu from '@antfu/eslint-config'
 import rules from '@trace-script/eslint-rules'
 
 export default antfu({
+  ignores: ['packages/eslint-rules/tests/fixtures/**'],
   type: 'lib',
   pnpm: true,
   typescript: true,

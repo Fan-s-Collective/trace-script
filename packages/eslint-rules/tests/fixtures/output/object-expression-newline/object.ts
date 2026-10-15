@@ -1,0 +1,2 @@
+const settings = {
+firstProperty: 'a sufficiently long first property value', secondProperty: 'a sufficiently long second property value', thirdProperty: 'a sufficiently long third property value', fourthProperty: 'a sufficiently long fourth property value' }

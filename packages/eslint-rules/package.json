@@ -15,11 +15,19 @@
   "main": "./src/index.ts",
   "module": "./src/index.ts",
   "types": "./src/index.ts",
+  "scripts": {
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
-    "eslint-factory": "catalog:lint"
+    "eslint-factory": "catalog:lint",
+    "vue-eslint-parser": "catalog:lint"
   },
   "devDependencies": {
     "@trace-script/tsconfig": "workspace:*",
-    "@types/node": "catalog:types"
+    "@types/node": "catalog:types",
+    "eslint": "catalog:lint",
+    "typescript": "catalog:dev",
+    "vitest": "catalog:test"
   }
 }
