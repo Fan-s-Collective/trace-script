@@ -28,7 +28,15 @@ const columns = [
       <span v-for="column in columns" :key="column.key">{{ column.label }}</span>
     </div>
     <div v-if="events.length" class="event-table-body">
-      <button v-for="event in events" :key="event.eventId" type="button" class="event-row" :class="{ selected: event.eventId === selectedId }" :aria-selected="event.eventId === selectedId" @click="emit('select', event.eventId)">
+      <button
+        v-for="event in events"
+        :key="event.eventId"
+        type="button"
+        class="event-row"
+        :class="{ selected: event.eventId === selectedId }"
+        :aria-selected="event.eventId === selectedId"
+        @click="emit('select', event.eventId)"
+      >
         <span class="truncate" :title="eventTraceId(event)">{{ eventTraceId(event) }}</span>
         <span class="truncate event-name"><strong>{{ eventName(event) }}</strong></span>
         <span class="truncate">{{ eventAgent(event) }}</span>

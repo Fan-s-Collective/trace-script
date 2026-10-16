@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
-import AgentWorkOverview from '../src/AgentWorkOverview.vue'
-import { AGENT_WORK_STATUS } from '../src/model'
+import AgentWorkOverview from '@/AgentWorkOverview.vue'
+import { AGENT_WORK_STATUS } from '@/model'
 
 const items = [
   { id: 'agent', name: 'Agent reasoning', group: 'Agent', startTime: 0, duration: 100, status: AGENT_WORK_STATUS.RUNNING },

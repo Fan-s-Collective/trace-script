@@ -36,7 +36,11 @@ const related = computed(() => {
         <Usage v-else-if="tab === 'Usage'" :event="event" />
         <Payload v-else-if="tab === 'Payload'" :payload="payload" />
         <Timming v-else-if="tab === 'Timing'" :event="event" />
-        <Relations v-else-if="tab === 'Relations'" :related="related" @select="emit('select', $event)" />
+        <Relations
+          v-else-if="tab === 'Relations'"
+          :related="related"
+          @select="emit('select', $event)"
+        />
         <Raw v-else :value="event" />
       </div>
     </template>

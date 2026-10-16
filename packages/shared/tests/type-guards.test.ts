@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isNumber } from '../src/type-guards'
+import { isNumber } from '@/type-guards'
 
 describe('isNumber', () => {
   it('accepts finite numbers and rejects non-numeric values', () => {

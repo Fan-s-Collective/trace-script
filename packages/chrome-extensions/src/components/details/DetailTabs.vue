@@ -6,7 +6,11 @@ const emit = defineEmits<{ 'update:active': [tab: DetailTab] }>()
 </script>
 
 <template>
-  <nav class="details-tabs" aria-label="Detail views" role="tablist">
+  <nav
+    class="details-tabs"
+    aria-label="Detail views"
+    role="tablist"
+  >
     <button
       v-for="item in tabs"
       :key="item"

@@ -498,19 +498,29 @@ onUnmounted(() => {
               :key="tick.time"
               class="agent-work-overview__tick"
               :style="{ left: `${tick.position}%` }"
-            >{{ formatMilliseconds(tick.time) }}</span>
+            >
+              {{ formatMilliseconds(tick.time) }}
+            </span>
           </div>
         </div>
       </header>
 
       <div class="agent-work-overview__body">
         <div class="agent-work-overview__labels">
-          <div v-for="group in layout.groups" :key="group.name" class="agent-work-overview__label-row">
+          <div
+            v-for="group in layout.groups"
+            :key="group.name"
+            class="agent-work-overview__label-row"
+          >
             <strong :title="group.name">{{ group.name }}</strong>
             <small>{{ group.rows.length }}</small>
           </div>
         </div>
-        <div ref="eventsViewport" class="agent-work-overview__events" @scroll="handleScroll">
+        <div
+          ref="eventsViewport"
+          class="agent-work-overview__events"
+          @scroll="handleScroll"
+        >
           <div class="agent-work-overview__canvas-track" :style="{ height: `${canvasHeight}px`, width: `${contentWidth}px` }">
             <canvas
               ref="canvas"
@@ -535,7 +545,9 @@ onUnmounted(() => {
           :id="activeOptionId"
           :aria-selected="focusedId === selectedId"
           role="option"
-        >{{ focusedLabel }}</span>
+        >
+          {{ focusedLabel }}
+        </span>
       </div>
 
       <div
