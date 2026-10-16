@@ -12,6 +12,8 @@ function findSrcRoot(filename: string): string {
     const directoryName = directory.split(sep).at(-1)
     if (directoryName === 'src')
       return directory
+    if (directoryName === 'tests' && existsSync(join(dirname(directory), 'src')))
+      return join(dirname(directory), 'src')
     directory = dirname(directory)
   }
 
@@ -69,7 +71,7 @@ function resolveAlias(source: string, filename: string): string {
 
 export const noRelativeSrcImport: Rule = createSimplePlugin({
   name: 'no-relative-src-import',
-  description: 'Use @/ aliases instead of relative imports within src.',
+  description: 'Use @/ aliases for imports from src in source and test files.',
   include: ['*.ts', '**/*.ts', '*.vue', '**/*.vue'],
   create(context) {
     return {
