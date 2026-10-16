@@ -46,6 +46,6 @@
     "commit-msg": "node scripts/verify-commit.mjs \"$1\""
   },
   "lint-staged": {
-    "*": "pnpm lint:fix --"
+    "*": "pnpm lint:fix"
   }
 }
