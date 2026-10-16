@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatMilliseconds } from '../src/format-milliseconds'
+import { formatMilliseconds } from '@/format-milliseconds'
 
 describe('formatMilliseconds', () => {
   it('formats millisecond and second durations', () => {

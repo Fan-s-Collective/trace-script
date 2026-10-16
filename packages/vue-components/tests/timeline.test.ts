@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { AGENT_WORK_STATUS } from '../src/model'
-import { createAgentWorkOverviewLayout, createAgentWorkOverviewTicks, findAgentWorkOverviewItem, niceTickStep } from '../src/timeline'
+import { AGENT_WORK_STATUS } from '@/model'
+import { createAgentWorkOverviewLayout, createAgentWorkOverviewTicks, findAgentWorkOverviewItem, niceTickStep } from '@/timeline'
 
 const items = [
   { id: 'model', name: 'Model request', group: 'Model', startTime: 120, duration: 80, status: AGENT_WORK_STATUS.SUCCESS },
