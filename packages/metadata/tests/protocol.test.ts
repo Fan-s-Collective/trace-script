@@ -9,6 +9,20 @@ const common = {
 }
 
 describe('minimal trace protocol', () => {
+  it('accepts call association, targeted errors, tool status, and cancellation', () => {
+    const events = [
+      { ...common, type: 'model.request', requestId: 'r', payload: {} },
+      { ...common, type: 'model.response', requestId: 'r', payload: {} },
+      { ...common, type: 'tool.result', payload: { callId: 'c', output: '', status: 'failed', message: 'timeout' } },
+      { ...common, type: 'trace.error', payload: { requestId: 'r', message: 'failed' } },
+      { ...common, type: 'trace.error', payload: { callId: 'c', message: 'failed' } },
+      { ...common, type: 'trace.end', status: 'cancelled' },
+    ]
+    expect(events.every(event => traceEventEnvelopeSchema.safeParse(event).success)).toBeTruthy()
+    expect(traceEventEnvelopeSchema.safeParse({ ...common, type: 'trace.error', payload: { requestId: 'r', callId: 'c', message: 'ambiguous' } }).success).toBeFalsy()
+    expect(traceEventEnvelopeSchema.safeParse({ ...common, type: 'model.request', requestId: '', payload: {} }).success).toBeFalsy()
+  })
+
   it('accepts the six event shapes', () => {
     const events = [
       { ...common, type: 'trace.start' },

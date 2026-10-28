@@ -83,9 +83,13 @@ const timelineTicks = computed(() => {
 const focusedId = computed(() => layout.value.rows[focusedIndex.value]?.item.id ?? '')
 const focusedLabel = computed(() => {
   const row = layout.value.rows[focusedIndex.value]
-  return row ? `${row.item.name}, ${row.item.group}, ${formatMilliseconds(row.duration)}` : ''
+  return row ? `${row.item.name}, ${row.item.group}, ${durationText(row.item)}, ${row.item.status}` : ''
 })
 const activeOptionId = `${instanceId}-option`
+
+function durationText(item: AgentWorkOverviewItem): string {
+  return item.durationLabel ?? (item.duration === undefined ? 'Duration unknown' : formatMilliseconds(Math.max(0, item.duration)))
+}
 
 let animationFrame = 0
 let zoomAnimationFrame = 0
@@ -131,6 +135,10 @@ function drawOverview(): void {
     failed: readColor('--awo-failed', '#dc5c5c'),
     running: readColor('--awo-running', '#d79a28'),
     success: readColor('--awo-success', '#31a37d'),
+    waiting: readColor('--awo-running', '#d79a28'),
+    incomplete: readColor('--awo-cancelled', '#7b8491'),
+    interrupted: readColor('--awo-cancelled', '#7b8491'),
+    unknown: readColor('--awo-cancelled', '#7b8491'),
   }
 
   context.lineWidth = 1
@@ -247,7 +255,7 @@ function handlePointerMove(event: PointerEvent): void {
   const hostBounds = host.getBoundingClientRect()
   if (hoveredId.value !== item.id) {
     const row = layout.value.rows.find(candidate => candidate.item.id === item.id)
-    tooltip.text = `${item.name} · ${item.group} · ${formatMilliseconds(Math.max(0, item.duration))} · ${row?.overlapCount ? 'parallel' : 'serial'}`
+    tooltip.text = `${item.name} · ${item.group} · ${durationText(item)} · ${item.status} · ${row?.overlapCount ? 'parallel' : 'serial'}`
   }
   hoveredId.value = item.id
   tooltip.x = event.clientX - hostBounds.left + 12

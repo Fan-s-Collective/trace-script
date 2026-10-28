@@ -1,31 +1,54 @@
-import type { TraceEventEnvelope } from '@trace-script/metadata'
+import type { TracePanelFilter } from '@/types/trace-panel'
+import { aggregateEvents } from '@trace-script/core'
 import { describe, expect, it } from 'vitest'
-import { eventAgent, eventDuration, eventStatus, eventTokens, eventUsage, TRACE_STATUS } from '@/utils/ui-model'
+import { previewEvents } from '@/preview'
+import { amountText, matchesCall, timingText, tokenText } from '@/utils/ui-model'
 
-describe('extension UI event model', () => {
-  const response = {
-    eventId: 'e1',
-    traceId: 't1',
-    sequence: 2,
-    timestamp: '2026-01-01T00:00:00.000Z',
-    type: 'model.response',
-    payload: {
-      model: 'gpt-4.1-mini',
-      output_text: 'Done',
-      usage: { total_tokens: 12 },
-    },
-  } satisfies TraceEventEnvelope
+const filter: TracePanelFilter = { query: '', type: 'all', status: 'all', agent: 'all', onlyErrors: false }
+const trace = aggregateEvents(previewEvents)[0]!
 
-  it('keeps event identity stable for selection', () => {
-    expect(response.eventId).toBe('e1')
-    expect(response.traceId).toBe('t1')
+describe('aggregated UI model', () => {
+  it('filters calls by type, status, agent, name, Trace ID, call ID and source event ID', () => {
+    expect(trace.calls.filter(call => matchesCall(call, { ...filter, type: 'tool' }))).toHaveLength(1)
+    expect(trace.calls.filter(call => matchesCall(call, { ...filter, status: 'success' }))).toHaveLength(3)
+    expect(trace.calls.filter(call => matchesCall(call, { ...filter, agent: 'planner' }))).toHaveLength(3)
+    for (const query of ['get_weather', 'call-weather', 'preview-tool'])
+      expect(trace.calls.filter(call => matchesCall(call, { ...filter, query }))).toHaveLength(1)
+    expect(trace.calls.filter(call => matchesCall(call, { ...filter, query: 'preview-trace' }))).toHaveLength(3)
   })
 
-  it('normalizes Responses metadata for the table and details tabs', () => {
-    expect(eventAgent(response)).toBe('—')
-    expect(eventStatus(response)).toBe(TRACE_STATUS.SUCCESS)
-    expect(eventTokens(response)).toBe(12)
-    expect(eventUsage(response).total_tokens).toBe(12)
-    expect(eventDuration(response)).toBe(0)
+  it('filters failed calls without relabelling successful calls after a Trace failure', () => {
+    const events = previewEvents.filter(event => event.type !== 'trace.end')
+    const failed = aggregateEvents([...events, {
+      eventId: 'error',
+      traceId: 'preview-trace',
+      sequence: 7,
+      timestamp: '2024-01-01T12:00:02.100Z',
+      type: 'trace.error',
+      payload: { message: 'late failure' },
+    }])[0]!
+    expect(failed.status).toBe('failed')
+    expect(failed.errors).toContain('late failure')
+    expect(failed.calls.filter(call => matchesCall(call, { ...filter, onlyErrors: true }))).toHaveLength(0)
+    expect(failed.calls.every(call => call.status === 'success')).toBeTruthy()
+  })
+
+  it('keeps unknown, zero, partial usage and missing or anomalous timing distinct', () => {
+    expect(tokenText()).toBe('—')
+    expect(tokenText(0)).toBe('0')
+    expect(amountText({ value: 0, complete: false })).toBe('0 (known; incomplete)')
+    expect(amountText({ complete: false })).toBe('—')
+    expect(timingText({ anomalous: false })).toBe('—')
+    expect(timingText({ duration: 0, anomalous: false })).toBe('0ms')
+    expect(timingText({ anomalous: true })).toBe('Time anomaly')
+  })
+
+  it('finds association conflicts without relabelling successful calls', () => {
+    const response = previewEvents.find(event => event.type === 'model.response')!
+    const conflict = aggregateEvents([...previewEvents, { ...response, timestamp: '2024-01-01T12:00:09.000Z' }])[0]!
+    const matching = conflict.calls.filter(call => matchesCall(call, { ...filter, status: 'conflict' }, conflict))
+    expect(matching.length).toBeGreaterThan(0)
+    expect(matching.every(call => call.associationConflict)).toBeTruthy()
+    expect(matching.every(call => call.status === 'success')).toBeTruthy()
   })
 })

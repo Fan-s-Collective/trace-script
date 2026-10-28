@@ -29,7 +29,7 @@ export function createAgentWorkOverviewLayout(items: readonly AgentWorkOverviewI
   const rows = orderedItems.map(item => ({
     item,
     start: Math.max(0, item.startTime - firstStart),
-    duration: Math.max(0, item.duration),
+    duration: Math.max(0, item.duration ?? 0),
     overlapCount: 0,
   }))
 

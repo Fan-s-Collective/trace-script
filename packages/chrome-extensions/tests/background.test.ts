@@ -1,4 +1,8 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { TraceBridgeMessage } from '@trace-script/metadata'
+import { aggregateEvents } from '@trace-script/core'
+import { traceEventEnvelopeSchema } from '@trace-script/metadata'
+import { createTraceSdk } from '@trace-script/sdk'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 interface FakePort {
   name: string
@@ -36,6 +40,34 @@ beforeEach(async () => {
 })
 
 describe('background trace transport', () => {
+  it('preserves seven real SDK events and derives three calls after worker validation and reconnect', () => {
+    const postMessage = vi.fn<(message: TraceBridgeMessage, origin: string) => void>()
+    vi.stubGlobal('window', { location: { origin: 'https://agent.example' }, postMessage })
+    const trace = createTraceSdk().startTrace()
+    const first = trace.recordRequest({ model: 'test', input: 'weather' })
+    trace.recordResponse(first.requestId, { output: [{ type: 'function_call', call_id: 'tool', name: 'weather', arguments: '{}' }], usage: { input_tokens: 24, output_tokens: 12, total_tokens: 36 } })
+    trace.recordToolResult({ callId: 'tool', output: '', status: 'success' })
+    const second = trace.recordRequest({ input: [{ type: 'function_call_output', call_id: 'tool', output: '' }] })
+    trace.recordResponse(second.requestId, { output_text: 'sunny', usage: { input_tokens: 42, output_tokens: 14, total_tokens: 56 } })
+    trace.end()
+    const panel = createPort('trace-panel')
+    panel.send({ type: 'PANEL_CONNECT', tabId: 9 })
+    const content = createPort('trace-content', 9)
+    for (const [message] of postMessage.mock.calls)
+      content.send({ type: 'INGEST_EVENT', event: message.data })
+    expect(panel.received).toHaveLength(8)
+    const reconnect = createPort('trace-panel')
+    reconnect.send({ type: 'PANEL_CONNECT', tabId: 9 })
+    const snapshot = reconnect.received[0]
+    if (!snapshot || !('type' in snapshot) || snapshot.type !== 'TRACE_QUERY_RESULT' || !('events' in snapshot))
+      throw new Error('Expected validated worker snapshot')
+    const events = traceEventEnvelopeSchema.array().parse(snapshot.events)
+    expect(events).toEqual(postMessage.mock.calls.map(([message]) => message.data))
+    const summary = aggregateEvents(events)[0]
+    expect(summary?.calls.map(call => call.kind)).toEqual(['model', 'tool', 'model'])
+    expect(summary?.tokens.total).toEqual({ value: 92, complete: true })
+  })
+
   it('keeps tab data isolated and broadcasts validated SDK events', () => {
     const panelA = createPort('trace-panel')
     panelA.send({ type: 'PANEL_CONNECT', tabId: 1 })
@@ -83,4 +115,8 @@ describe('background trace transport', () => {
       events: [{ eventId: 'event-2' }],
     })
   })
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
 })

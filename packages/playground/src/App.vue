@@ -235,7 +235,7 @@ async function answerWeather(userText: string): Promise<string> {
     setTimeline(1, 'active', '等待模型决定下一步')
     const firstResponse = await responsesCreate(firstRequest)
     lastResponse.value = firstResponse
-    const responseResult = trace.recordResponse(firstResponse)
+    const responseResult = trace.recordResponse(requestResult.requestId, firstResponse)
     if (!responseResult.success)
       throw new Error(`记录模型响应失败：${responseResult.reason}`)
     const call = firstResponse.output.find((item): item is FunctionCall => item.type === 'function_call')
@@ -268,7 +268,7 @@ async function answerWeather(userText: string): Promise<string> {
     setTimeline(3, 'active', '生成最终 output_text')
     const secondResponse = await responsesCreate(secondRequest)
     lastResponse.value = secondResponse
-    const secondResponseResult = trace.recordResponse(secondResponse)
+    const secondResponseResult = trace.recordResponse(secondRequestResult.requestId, secondResponse)
     if (!secondResponseResult.success)
       throw new Error(`记录模型响应失败：${secondResponseResult.reason}`)
     const endResult = trace.end()

@@ -10,6 +10,15 @@ const items = [
 ]
 
 describe('agent work overview', () => {
+  it('distinguishes unknown duration from an observed zero interval', async () => {
+    const wrapper = mount(AgentWorkOverview, { props: { items: [{ id: 'unknown', name: 'Unfinished', group: 'model', startTime: 0, status: AGENT_WORK_STATUS.UNKNOWN }] } })
+    expect(wrapper.find('[role="option"]').text()).toContain('Duration unknown')
+    expect(wrapper.find('[role="option"]').text()).not.toContain('0 ms')
+    await wrapper.setProps({ items: [{ id: 'zero', name: 'Completed', group: 'model', startTime: 0, duration: 0, status: AGENT_WORK_STATUS.SUCCESS }] })
+    expect(wrapper.find('[role="option"]').text()).toContain('0 ms')
+    wrapper.unmount()
+  })
+
   beforeEach(() => {
     vi.restoreAllMocks()
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(640)

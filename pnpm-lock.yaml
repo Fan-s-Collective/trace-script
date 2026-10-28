@@ -212,6 +212,9 @@ importers:
       '@trace-script/metadata':
         specifier: workspace:*
         version: link:../metadata
+      '@trace-script/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@types/chrome':
         specifier: catalog:types
         version: 0.3.4
