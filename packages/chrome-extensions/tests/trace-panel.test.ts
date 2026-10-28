@@ -1,5 +1,3 @@
-// @vitest-environment happy-dom
-
 import type { TraceEventEnvelope } from '@trace-script/metadata'
 import type { WorkerToPanelMessage } from '@/messages'
 import { aggregateEvents } from '@trace-script/core'

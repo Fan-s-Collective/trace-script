@@ -10,4 +10,25 @@ export default defineConfig({
     },
   },
   plugins: [vue()],
+  test: {
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'chrome-extensions-node',
+          include: ['tests/**/*.test.ts'],
+          exclude: ['tests/trace-panel.test.ts'],
+          environment: 'node',
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'chrome-extensions-dom',
+          include: ['tests/trace-panel.test.ts'],
+          environment: 'happy-dom',
+        },
+      },
+    ],
+  },
 })

@@ -125,7 +125,3 @@ Trace Script 是一个嵌入 Chrome DevTools 的 Agent 会话可视化调试工�
 - [Chrome Message Passing](https://developer.chrome.com/docs/extensions/develop/concepts/messaging)
 - [Nuxt Client-side Rendering](https://nuxt.com/docs/3.x/guide/concepts/rendering)
 - [shadcn/vue Nuxt 安装](https://www.shadcn-vue.com/docs/installation/nuxt)
-
-## 消息聚合
-
-当前调用聚合的实现范围、交互约定与验收结果见 [消息聚合验收](./message-aggregation.md)。
