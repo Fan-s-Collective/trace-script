@@ -160,9 +160,7 @@ export function useTracePanel(): TracePanelState {
     timelineHeight.value = snapResize(current + delta, 80, 360)
   }
   useEventListener('pointermove', resize)
-  useEventListener('pointerup', () => {
-    dragging.value = ''
-  })
+  useEventListener('pointerup', () => dragging.value = '')
   onKeyStroke(['ArrowDown', 'ArrowUp', 'Escape'], (event) => {
     const target = event.target
     if (target instanceof HTMLElement && (target.closest('input, select, textarea, [role="separator"], [role="tablist"], .agent-work-overview') || target.isContentEditable))

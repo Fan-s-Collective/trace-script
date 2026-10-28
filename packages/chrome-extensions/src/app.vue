@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { AgentWorkOverviewItem } from '@trace-script/vue-components'
 import { AgentWorkOverview } from '@trace-script/vue-components'
-import { computed } from 'vue'
+import { useToggle } from '@vueuse/core'
+import { computed, toRef } from 'vue'
 import { useTracePanel } from '@/hooks/use-trace-panel'
 import { toOverviewItems } from '@/utils/overview-model'
 import EventDetails from '@/views/EventDetails.vue'
@@ -38,6 +39,8 @@ const {
 } = useTracePanel()
 
 const overviewItems = computed(() => toOverviewItems(visibleCalls.value))
+const toggleFilters = useToggle(filtersVisible)
+const toggleErrors = useToggle(toRef(filter, 'onlyErrors'))
 
 function onOverviewSelect(item: AgentWorkOverviewItem): void {
   selectEvent(item.id)
@@ -61,8 +64,8 @@ function onOverviewSelect(item: AgentWorkOverviewItem): void {
       @clear="clearEvents"
       @add="addPreviewEvents"
       @toggle-recording="toggleRecording"
-      @toggle-filters="filtersVisible = !filtersVisible"
-      @toggle-errors="filter.onlyErrors = !filter.onlyErrors"
+      @toggle-filters="toggleFilters()"
+      @toggle-errors="toggleErrors()"
     />
     <div class="grid min-h-0 flex-1" :class="workspaceClass">
       <AgentWorkOverview

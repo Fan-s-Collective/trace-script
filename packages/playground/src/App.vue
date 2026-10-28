@@ -2,6 +2,7 @@
 import type { AgentWorkOverviewItem, AgentWorkStatus } from '@trace-script/vue-components'
 import { createTraceSdk } from '@trace-script/sdk'
 import { AGENT_WORK_STATUS, AgentWorkOverview } from '@trace-script/vue-components'
+import { promiseTimeout } from '@vueuse/core'
 import { computed, shallowRef } from 'vue'
 
 interface WeatherTool {
@@ -142,10 +143,6 @@ function createStressOverviewItems(count: number): AgentWorkOverviewItem[] {
   }))
 }
 
-function wait(milliseconds: number): Promise<void> {
-  return new Promise(resolve => window.setTimeout(resolve, milliseconds))
-}
-
 function setTimeline(index: number, state: TimelineItem['state'], detail: string): void {
   timeline.value = timeline.value.map((item, itemIndex) => {
     const isCurrentStep = itemIndex === index
@@ -177,7 +174,7 @@ function timelineStepLabel(item: TimelineItem, index: number): string | number {
 }
 
 async function responsesCreate(request: ModelRequest): Promise<ModelResponse> {
-  await wait(420)
+  await promiseTimeout(420)
   const toolResult = request.input.find((item): item is FunctionCallOutput => 'type' in item && item.type === 'function_call_output')
   if (!toolResult) {
     const firstInput = request.input[0]
@@ -210,7 +207,7 @@ async function responsesCreate(request: ModelRequest): Promise<ModelResponse> {
 }
 
 async function getWeather(requestedCity: string): Promise<WeatherData> {
-  await wait(520)
+  await promiseTimeout(520)
   return { city: requestedCity, condition: '晴', temperature: 22 }
 }
 

@@ -2,7 +2,8 @@
 import type { PropType } from 'vue'
 import type { AgentWorkOverviewItem, AgentWorkOverviewRange, AgentWorkOverviewTheme } from './model'
 import { formatMilliseconds } from '@trace-script/shared'
-import { computed, nextTick, onUnmounted, reactive, shallowRef, useId, useTemplateRef, watch } from 'vue'
+import { onKeyStroke, useDevicePixelRatio, useFocus, useRafFn, useResizeObserver } from '@vueuse/core'
+import { computed, nextTick, reactive, shallowRef, useId, useTemplateRef, watch } from 'vue'
 import { createAgentWorkOverviewLayout, createAgentWorkOverviewTicks, findAgentWorkOverviewItem, niceTickStep } from './timeline'
 
 const props = defineProps({
@@ -53,7 +54,8 @@ const viewportWidth = shallowRef(0)
 const zoom = shallowRef(1)
 const focusedIndex = shallowRef(0)
 const hoveredId = shallowRef('')
-const keyboardFocused = shallowRef(false)
+const { focused: keyboardFocused } = useFocus(componentHost)
+const { pixelRatio } = useDevicePixelRatio()
 const tooltip = reactive({
   text: '',
   visible: false,
@@ -91,9 +93,23 @@ function durationText(item: AgentWorkOverviewItem): string {
   return item.durationLabel ?? (item.duration === undefined ? 'Duration unknown' : formatMilliseconds(Math.max(0, item.duration)))
 }
 
-let animationFrame = 0
-let zoomAnimationFrame = 0
-let disposeEventsObserver = (): void => {}
+const { resume: scheduleDraw } = useRafFn(drawOverview, { immediate: false, once: true })
+let zoomAnimation = { startZoom: 1, startScrollLeft: 0, targetZoom: 1, targetScrollLeft: 0, startedAt: 0 }
+const { pause: pauseZoom, resume: resumeZoom } = useRafFn(({ timestamp }) => {
+  const viewport = eventsViewport.value
+  if (!viewport) {
+    pauseZoom()
+    return
+  }
+  const progress = Math.min(1, (timestamp - zoomAnimation.startedAt) / 240)
+  const eased = 1 - (1 - progress) ** 3
+  zoom.value = zoomAnimation.startZoom + (zoomAnimation.targetZoom - zoomAnimation.startZoom) * eased
+  viewport.scrollLeft = zoomAnimation.startScrollLeft + (zoomAnimation.targetScrollLeft - zoomAnimation.startScrollLeft) * eased
+  syncRulerPosition(viewport.scrollLeft)
+  scheduleDraw()
+  if (progress >= 1)
+    pauseZoom()
+}, { immediate: false })
 
 function readColor(name: string, fallback: string): string {
   const host = componentHost.value
@@ -114,14 +130,14 @@ function drawOverview(): void {
   const visibleWidth = viewportWidth.value
   const visibleStart = eventsViewport.value?.scrollLeft ?? 0
   const height = canvasHeight.value
-  const pixelRatio = window.devicePixelRatio || 1
-  const bitmapWidth = Math.max(1, Math.round(visibleWidth * pixelRatio))
-  const bitmapHeight = Math.max(1, Math.round(height * pixelRatio))
+  const ratio = pixelRatio.value || 1
+  const bitmapWidth = Math.max(1, Math.round(visibleWidth * ratio))
+  const bitmapHeight = Math.max(1, Math.round(height * ratio))
   if (target.width !== bitmapWidth)
     target.width = bitmapWidth
   if (target.height !== bitmapHeight)
     target.height = bitmapHeight
-  context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+  context.setTransform(ratio, 0, 0, ratio, 0, 0)
   context.clearRect(0, 0, visibleWidth, height)
   context.fillStyle = readColor('--awo-bg', '#fff')
   context.fillRect(0, 0, visibleWidth, height)
@@ -201,15 +217,6 @@ function drawOverview(): void {
     context.strokeStyle = readColor('--awo-selection', 'rgba(37, 99, 235, 0.85)')
     context.strokeRect(left + 0.5, 0.5, Math.max(0, right - left - 1), height - 1)
   }
-}
-
-function scheduleDraw(): void {
-  if (animationFrame)
-    return
-  animationFrame = window.requestAnimationFrame(() => {
-    animationFrame = 0
-    drawOverview()
-  })
 }
 
 function itemAtPointer(event: PointerEvent | MouseEvent): AgentWorkOverviewItem | false {
@@ -370,23 +377,15 @@ function zoomToRange(range: AgentWorkOverviewRange): void {
   const targetZoom = Math.min(MAX_ZOOM, Math.max(1, duration / span))
   const targetScrollLeft = range.startTime / duration * baseWidth.value * targetZoom
 
-  const startZoom = zoom.value
-  const startScrollLeft = viewport.scrollLeft
-  const animStart = performance.now()
-  const ZOOM_TRANSITION_MS = 240
-
-  window.cancelAnimationFrame(zoomAnimationFrame)
-  const step = (now: number): void => {
-    const progress = Math.min(1, (now - animStart) / ZOOM_TRANSITION_MS)
-    const eased = 1 - (1 - progress) ** 3
-    zoom.value = startZoom + (targetZoom - startZoom) * eased
-    viewport.scrollLeft = startScrollLeft + (targetScrollLeft - startScrollLeft) * eased
-    syncRulerPosition(viewport.scrollLeft)
-    scheduleDraw()
-    if (progress < 1)
-      zoomAnimationFrame = window.requestAnimationFrame(step)
+  zoomAnimation = {
+    startZoom: zoom.value,
+    startScrollLeft: viewport.scrollLeft,
+    targetZoom,
+    targetScrollLeft,
+    startedAt: performance.now(),
   }
-  zoomAnimationFrame = window.requestAnimationFrame(step)
+  pauseZoom()
+  resumeZoom()
 }
 
 function syncRulerPosition(value: number): void {
@@ -395,7 +394,7 @@ function syncRulerPosition(value: number): void {
     rulerElement.style.transform = `translate3d(-${value}px, 0, 0)`
 }
 
-function handleKeydown(event: KeyboardEvent): void {
+onKeyStroke(['ArrowRight', 'ArrowDown', 'ArrowLeft', 'ArrowUp', 'Enter', ' '], (event) => {
   if (layout.value.rows.length === 0)
     return
 
@@ -415,15 +414,7 @@ function handleKeydown(event: KeyboardEvent): void {
     if (row)
       selectItem(row.item)
   }
-}
-
-function handleFocus(): void {
-  keyboardFocused.value = true
-}
-
-function handleBlur(): void {
-  keyboardFocused.value = false
-}
+}, { target: componentHost })
 
 function selectItem(item: AgentWorkOverviewItem): void {
   const index = layout.value.rows.findIndex(row => row.item.id === item.id)
@@ -433,7 +424,7 @@ function selectItem(item: AgentWorkOverviewItem): void {
 }
 
 watch(
-  [layout, contentWidth, canvasHeight, hoveredId, focusedId, keyboardFocused, () => props.selectedId, () => props.theme],
+  [layout, contentWidth, canvasHeight, hoveredId, focusedId, keyboardFocused, pixelRatio, () => props.selectedId, () => props.theme],
   scheduleDraw,
   { flush: 'post' },
 )
@@ -448,32 +439,13 @@ watch(
   { immediate: true },
 )
 
-// 用 watch 观察 eventsViewport 的出现（items 可能异步加载，v-if 块中的元素会在挂载后才渲染），
-// 而不是 onMounted 里一次性读取，否则首次 items 为空时会错过建立 ResizeObserver。
-watch(
-  eventsViewport,
-  (viewport) => {
-    if (!viewport)
-      return
-    viewportWidth.value = viewport.clientWidth
-    disposeEventsObserver()
-    const observer = new ResizeObserver(() => {
-      viewportWidth.value = viewport.clientWidth
-    })
-    observer.observe(viewport)
-    disposeEventsObserver = () => observer.disconnect()
-    scheduleDraw()
-  },
-  { flush: 'post' },
-)
+function updateViewportWidth(): void {
+  viewportWidth.value = eventsViewport.value?.clientWidth ?? 0
+  scheduleDraw()
+}
 
-onUnmounted(() => {
-  disposeEventsObserver()
-  if (animationFrame)
-    window.cancelAnimationFrame(animationFrame)
-  if (zoomAnimationFrame)
-    window.cancelAnimationFrame(zoomAnimationFrame)
-})
+watch(eventsViewport, updateViewportWidth, { flush: 'post' })
+useResizeObserver(eventsViewport, updateViewportWidth)
 </script>
 
 <template>
@@ -485,9 +457,6 @@ onUnmounted(() => {
     :aria-label="ariaLabel"
     role="listbox"
     tabindex="0"
-    @blur="handleBlur"
-    @focus="handleFocus"
-    @keydown="handleKeydown"
     @wheel.prevent="handleWheel"
   >
     <template v-if="layout.rows.length">
